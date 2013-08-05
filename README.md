@@ -1,4 +1,3 @@
-
 # Backbone.Components
 
 Shared repo for re-usable components built on top of Backbone JS
@@ -15,4 +14,4 @@ I also use Bootstrap for CSS in all of my default templates, but feel free to ov
 
 I also include my custom BaseModel and BaseCollection whcih I inherit all of my models and collections from, and I hope to make this an optional feature of the library in the future. 
 
-All constructors are appended to the global variable BBC (__short for Backbone.Components__)
+All constructors are attached to the global variable BBC (__short for Backbone.Components__)
