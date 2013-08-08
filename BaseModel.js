@@ -3,6 +3,19 @@ var BBC = BBC || {};
     "use strict";
 
     /**
+     * This is the parse method used by
+     * @param res
+     * @returns {*}
+     */
+    BBC.parse = function(res) {
+        if (typeof res === 'object') {
+            return res.response ? res.response : res;
+        } else {
+            return {};
+        }
+    }
+
+    /**
      * Base model for all models. Does basic stuff like pops the model off of the response object.
      * @type {*}
      */
