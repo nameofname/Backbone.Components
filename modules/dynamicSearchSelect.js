@@ -24,9 +24,10 @@ var BBC = BBC || {};
 
         // Default user options to configure the search.
         defaults : {
-            target : null,
-            placeholder : 'search...',
-            className : '',
+            url : null,
+            target : null, // the target selector for where to place the drop down.
+            placeholder : 'search...', // the text placeholder.
+            className : '', // className to be applied to the drop down.
             /**
              * Generates the search object to be passed with collection fetch. Since this may be unique, the user must
              * specify what kind of a data object to pass.
@@ -52,7 +53,7 @@ var BBC = BBC || {};
 
         initialize : function(options) {
             // Set cached jQuery select object:
-            this.$select = options.select;
+//            this.$select = options.select;
 
             // Create simple template:
             this.templateTxt = '<select class="dynamic-search chzn-select"><option value=""></option></select>';
@@ -60,6 +61,11 @@ var BBC = BBC || {};
 
             // Set up configurations via merge:
             this.config = _.extend(this.config, options);
+
+            // The user must specify a search endpoint. If they do not, do not allow them ot instansiate:
+            if (!this.config.url) {
+                throw new Error("You must specify a URL property to initialize dynaimc search select. ");
+            }
         },
 
         render : function(){
@@ -83,7 +89,7 @@ var BBC = BBC || {};
                 self.trigger('dynamic-change', e, data, selectedModel);
             });
 
-            // Set keyup event on the chozen input field to do ingredient search:
+            // Set keyup event on the chozen input field to do keyword search:
             self.$chosenInput = $(self.el).find('.chzn-drop input');
             self.$chosenInput.keyup(function(){
                 // First, do a search:
@@ -110,7 +116,7 @@ var BBC = BBC || {};
             // Set the searched value for the next time you check:
             self.searchedValue = val;
 
-            // If the search string is empty, then empty out the ingredients list and do not do the search:
+            // If the search string is empty, then do not do the search:
             if (val === '') {
                 return false;
             }
@@ -145,10 +151,11 @@ var BBC = BBC || {};
          */
         _search : function(val) {
             var self = this;
-            // Create new collection for searched ingredients to fall into:
-            self.searchCollection = new BBC.Ingredients();
+            // Create new collection for searched models to fall into:
+            self.searchCollection = new BBC.BaseCollection();
+            self.searchCollection.url = self.config.url;
 
-            // do a search for the ingredient:
+            // do a search for the current string:
             self.searchCollection.fetch({
                 data : self.config.generateSearchParams(val),
                 success : function(d) {
@@ -165,7 +172,7 @@ var BBC = BBC || {};
         },
 
         /**
-         * Displays searched for ingredients in a drop down list.
+         * Displays found models in a drop down list.
          */
         updateSearchDropDown : function() {
             var self = this;
@@ -174,11 +181,11 @@ var BBC = BBC || {};
             self.$chosenSearch.find('.dynamic-option').remove();
             self.subViews.empty();
 
-            self.searchCollection.each(function(ingredient, key){
+            self.searchCollection.each(function(model, key){
 
                 // Create a new option view, render it, add to the sub views:
                 var option = new BBC.dynamicSearchOption({
-                    model : ingredient
+                    model : model
                 }).render();
 
                 self.subViews.add(option);
