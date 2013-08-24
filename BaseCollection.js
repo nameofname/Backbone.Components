@@ -45,8 +45,8 @@ var BBC = BBC || {};
             // Always switch it back:
             if (newUrl) {
                 this.url = oldUrl;
-                return jqxhr;
             }
+            return jqxhr;
         }
 
     });
