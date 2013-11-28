@@ -152,7 +152,7 @@ var BBC = BBC || {};
         _search : function(val) {
             var self = this;
             // Create new collection for searched models to fall into:
-            self.searchCollection = new BBC.BaseCollection();
+            self.searchCollection = new Backbone.Collection();
             self.searchCollection.url = self.config.url;
 
             // do a search for the current string:
