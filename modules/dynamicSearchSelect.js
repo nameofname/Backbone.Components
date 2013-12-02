@@ -155,6 +155,11 @@ var BBC = BBC || {};
             self.searchCollection = new Backbone.Collection();
             self.searchCollection.url = self.config.url;
 
+            // If the user specified a parse method for the collection, then apply it here:
+            if (!_.isUndefined(self.config.parseCollection) && typeof self.config.parseCollection === 'function') {
+                self.searchCollection.parse = self.config.parseCollection;
+            }
+
             // do a search for the current string:
             self.searchCollection.fetch({
                 data : self.config.generateSearchParams(val),
@@ -214,7 +219,6 @@ var BBC = BBC || {};
         tagName : 'option',
 
         initialize : function(options) {
-            var idAttr = this.model.idAttribute;
             this.template = _.template('<%= model.name %>', null, {variable : 'model'})
         },
 
