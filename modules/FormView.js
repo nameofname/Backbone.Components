@@ -34,7 +34,7 @@ var BBC = BBC || {};
  *          - name <string> the displayed name of the option.
  *          - value <string> the value attribute of the option
  */
-        (function(){
+(function(){
             "use strict";
 
             /**
@@ -76,7 +76,7 @@ var BBC = BBC || {};
 
                     // If a string was passed as the view, then parse out that information.
                     if (typeof field.view === 'string') {
-                        viewFunction = BBC.getObjectFromString(field.view);
+                        viewFunction = _getObjectFromString(field.view);
 
                     } else {
                         // Assume that the passed view is an object here.
@@ -119,7 +119,7 @@ var BBC = BBC || {};
                     }
 
                     // Retrieve the view function from the type:
-                    viewFunction = BBC.getObjectFromString('BBC.FormView_' + field.type);
+                    viewFunction = _getObjectFromString('BBC.FormView_' + field.type);
 
                     // Create the subView without passing a string key:
                     subView = new viewFunction(config);
@@ -244,6 +244,29 @@ var BBC = BBC || {};
             return this;
         }
     });
+
+
+    /**
+     *
+     * @param string
+     * @returns {*}
+     */
+    var _getObjectFromString = function(string) {
+        var objArr = string.split('.'),
+            currObj = window;
+
+        for (var i=0; i<objArr.length; i++) {
+            var subStr = objArr[i];
+            if (currObj[subStr]) {
+                currObj = currObj[subStr];
+            } else {
+                return null;
+            }
+            if (i === objArr.length - 1) {
+                return currObj;
+            }
+        }
+    }
 
 
 })();
