@@ -7,7 +7,7 @@
  */
 
 var BBC = BBC || {};
-(function(){
+(function (){
     "use strict";
 
 
@@ -16,7 +16,7 @@ var BBC = BBC || {};
      * the SubViews class with methods for handling the SubViews.
      * @returns {*}
      */
-    var SubViews = function(){
+    var SubViews = function () {
         return this;
     };
 
@@ -28,71 +28,114 @@ var BBC = BBC || {};
      * @param currentView
      * @returns {*}
      */
-    SubViews.prototype.init = function(currentView) {
+    SubViews.prototype.init = function (currentView) {
         // A reference to the current view. This will become the parentView of all models added to SubViews.prototype.List.
         this.currentView = currentView;
 
         // The list of SubViews is just an object literal maintained by the subview functions:
         this.List = {};
 
+        // last key is a reference to the last subview's key added -- used in last() method.
+        this.lastKey = null;
+
         return this;
-    }
+    };
 
     /**
      * Add a new subview to the list of subivews.
      * Accepts arguments either (VIEW), or (KEY, VIEW) - where key is a string reference to the view you want to add.
      *
      * @param key <string> - *optional - a key to store the view under. Can be used later to retrieve the view.
-     * @param view <object> - the view you want to add.
+     * @param viewConstructor <function> - constructor for the view you want to add.
+     * @param viewOptions <object> - options passed to the new view.
      * @returns {*}
      */
-    SubViews.prototype.add = function(key, view) {
+    SubViews.prototype.add = function (key, viewConstructor, viewOptions) {
 
         // If key is a view, then shift it to the only argument, and create the key to add it internally.
-        if (key instanceof Backbone.View) {
-            view = key;
+        if (typeof key === 'function') {
+            viewOptions = viewConstructor ? viewConstructor : {};
+            viewConstructor = key;
 
             // Create a key internally here:
             key = this._generateKey();
         } else {
 
             // If the user is adding a custom key, check that they have not used it yet:
-            if(this._checkKey(key)) {
+            if(!this._checkKey(key)) {
                 throw new Error('The subView name ' + key + ' cannot be used twice.');
                 return false;
             }
 
         }
 
-        // If at this point the view is not an instance of a Backbone.View, then return false:
+        if (typeof viewConstructor !== 'function') {
+            throw new Error('BackBone Components requires that when adding a sub-view a valid constructor function is passed.');
+        }
+
+        // Add the parent view to the newly created sub-view :
+        viewOptions = viewOptions || {};
+        _.extend(viewOptions, {
+            parentView : this.currentView
+        });
+
+        var view = new viewConstructor(viewOptions);
+
+        // If at this point the viewConstructor is not an instance of a Backbone.View, then return false:
         if (!(view instanceof Backbone.View)) {
             return false;
         }
 
-        // Assign the parentView to the subview:
-        view.parentView = this.currentView;
-
         // Now just add the subview to the list:
         this.List[key] = view;
+        this.lastKey = key;
 
         return view;
-    }
+    };
+
+    /**
+     * Clear out sub-views.
+     */
+    SubViews.prototype.empty = function () {
+        this.List = {};
+    };
 
     /**
      * Get a subView from the internal list based on a string:
      * @param string
      * @returns {*}
      */
-    SubViews.prototype.get = function(string) {
+    SubViews.prototype.get = function (string) {
         return this.List[string] ? this.List[string] : null;
-    }
+    };
 
     /**
-     * Clear out sub-views.
+     * Gets the last subview on the chain :
+     * @returns {*}
      */
-    SubViews.prototype.empty = function() {
-        this.List = {};
-    }
+    SubViews.prototype.last = function () {
+        return (this.lastKey) ? this.get(this.lastKey) : null;
+    };
+
+//    /**
+//     * Gets the top view in the tree of views.
+//     */
+//    SubViews.prototype.top = function () {
+//        var curr =  this.currentView.parentView ? this.currentView.parentView : null;
+//        var topView;
+//
+//        if (curr === null) {
+//            return null;
+//        }
+//
+//        while (curr) {
+//            curr = curr.hasOwnProperty('parentView') ? curr.parentView : null;
+//            if (curr) {
+//                topView = curr;
+//            }
+//        }
+//        return topView;
+//    };
 
     /**
      * Do some callback on the array of SubViews.
@@ -102,7 +145,7 @@ var BBC = BBC || {};
      *      context you are currently in at the time of calling the callback.
      */
     // TODO : TEST THIS FUNCTION WHEN I HAVE A REAL USE CASE!!!!!!!!!!!!!
-    SubViews.prototype.each = function(callback, args, context) {
+    SubViews.prototype.each = function (callback, args, context) {
 
         // Callback has to be a function:
         if (typeof callback !== 'function') {
@@ -110,21 +153,21 @@ var BBC = BBC || {};
         }
 
         // Apply the callback to each subview:
-        _.each(this.List, function(subView){
+        _.each(this.List, function (subView){
 
             var thisArg = context ? context : subView;
             callback.apply(thisArg, [subView, args]);
 
             // Lastly, set the context of the each to be used in apply if passed:
         }, (context ? context : null));
-    }
+    };
 
     /**
      * Generate a token to store the new view under if the programmer did not pass in a key:
      * @returns {string}
      * @private
      */
-    SubViews.prototype._generateKey = function() {
+    SubViews.prototype._generateKey = function () {
         var len = _.size(this.List),
             string = 'subview';
 
@@ -134,7 +177,7 @@ var BBC = BBC || {};
         }
 
         return (string + len);
-    }
+    };
 
     /**
      * Checks if a spececified key exists in the list.
@@ -142,15 +185,16 @@ var BBC = BBC || {};
      * @returns {boolean}
      * @private
      */
-    SubViews.prototype._checkKey = function(string) {
+    SubViews.prototype._checkKey = function (string) {
         if (!this.List[string]) {
-            return false;
-        } else {
             return true;
+        } else {
+            return false;
         }
-    }
+    };
 
-
+//    SubViews.prototype._publish = function (string) {};
+//    SubViews.prototype._subscribe = function (string) {};
 
     /**
      * === === === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -163,18 +207,45 @@ var BBC = BBC || {};
         // subViews is an instance of the above defined subViews. Manages your sub-views for you.
         subViews : new SubViews(),
 
-        constructor : function(options){
+        constructor : function (options){
             this.subViews = new SubViews();
             this.subViews.init(this);
             BBC.BaseView.__super__.constructor.call(this, options);
             return this;
         },
 
+        topView : function () {
+            console.log('derp');
+            var curr =  this.parentView ? this.parentView : null;
+            var topView;
+
+            if (curr === null) {
+                return null;
+            }
+
+            while (curr) {
+                curr = curr.hasOwnProperty('parentView') ? curr.parentView : null;
+                if (curr) {
+                    topView = curr;
+                }
+            }
+            return topView;
+        },
+
+        /**
+         * Publish an event on all parent views, and sub-views.
+         * @param e
+         * @param args
+         */
+        publish : function (e, args) {
+            //
+        },
+
         /**
          * Kills an event, common use in views where events are triggered on links, etc.
          * @param e - the event
          */
-        killE : function(e) {
+        killE : function (e) {
             if (e && e.preventDefault) {
                 e.preventDefault();
                 e.stopPropagation();
