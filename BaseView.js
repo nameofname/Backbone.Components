@@ -66,7 +66,6 @@ var BBC = BBC || {};
                 throw new Error('The subView name ' + key + ' cannot be used twice.');
                 return false;
             }
-
         }
 
         if (typeof viewConstructor !== 'function') {
@@ -208,23 +207,27 @@ var BBC = BBC || {};
         subViews : new SubViews(),
 
         constructor : function (options){
+
             this.subViews = new SubViews();
             this.subViews.init(this);
+            this.parentView = options.parentView || null;
+
             BBC.BaseView.__super__.constructor.call(this, options);
             return this;
         },
 
         topView : function () {
-            console.log('derp');
             var curr =  this.parentView ? this.parentView : null;
             var topView;
 
+            // If there is no view above this one, then return the current view :
             if (curr === null) {
-                return null;
+                return this;
             }
 
+            topView = curr;
             while (curr) {
-                curr = curr.hasOwnProperty('parentView') ? curr.parentView : null;
+                curr = curr.parentView ? curr.parentView : null;
                 if (curr) {
                     topView = curr;
                 }
@@ -238,6 +241,7 @@ var BBC = BBC || {};
          * @param args
          */
         publish : function (e, args) {
+            var t = this.topView();
             //
         },
 
