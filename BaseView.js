@@ -199,6 +199,8 @@ var BBC = BBC || {};
      * === === === === === === === === === === === === === === === === === === === === === === === === === === === ===
      * @type {*}
      */
+
+//    var EVENT_SPECIAL_NAME = '__bb_components_publish__';
     BBC.BaseView = Backbone.View.extend({
 
         // subViews is an instance of the above defined subViews. Manages your sub-views for you.
@@ -206,20 +208,10 @@ var BBC = BBC || {};
 
         constructor : function (options){
 
+            var self = this;
             this.subViews = new SubViews();
             this.subViews.init(this);
             this.parentView = options.parentView || null;
-
-            // Bind all sub-views to the special private event "__bb_components_publish__" so that all views in a tree
-            // can listen on events published with the publish method.
-            this.on('__bb_components_publish__', function (event, eventName, args) {
-
-                if (this.subViews && this.subViews instanceof SubViews) {
-                    this.subViews.each(function (view) {
-                        view._publish(eventName, args);
-                    });
-                }
-            });
 
             BBC.BaseView.__super__.constructor.call(this, options);
             return this;
@@ -228,8 +220,11 @@ var BBC = BBC || {};
         /**
          * Publish an event on all parent views, and sub-views. To bind on such an event - note that the first argument
          * passed to the callback will always be the view that triggered the event.
-         * @param e
-         * @param args
+         * @param e - the event name
+         * @param args - an array of arguments.
+         *
+         * *Note that although you do pass args, the first param to the callback will be the view that triggered the
+         * event.
          */
         publish : function (e, args) {
             var t = this.topView();
@@ -237,13 +232,22 @@ var BBC = BBC || {};
             // Add the view to the beginning of the array :
             args.unshift(this);
 
-            t.trigger(e, args);
-            t.trigger('__bb_components_publish__', args)
+            t._publish(e, args);
         },
 
         _publish : function (eventName, args) {
-            // No good -- eventName has to be part of the args array.
-            this.trigger('__bb_components_publish__', eventName, args);
+            var self = this;
+            // Trigger the intended event on THIS view
+            self.trigger(eventName, args);
+
+            // And trigger the special __bb_components_publish__ event on all sub-views.
+            if (self.subViews && self.subViews instanceof SubViews) {
+
+                self.subViews.each(function (view) {
+                    view._publish(eventName, args);
+                });
+
+            }
         },
 
         /**
