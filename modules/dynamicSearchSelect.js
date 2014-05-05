@@ -189,11 +189,7 @@ var BBC = BBC || {};
             self.searchCollection.each(function(model, key){
 
                 // Create a new option view, render it, add to the sub views:
-                var option = new BBC.dynamicSearchOption({
-                    model : model
-                }).render();
-
-                self.subViews.add(option);
+                var option = self.subViews.add(BBC.dynamicSearchOption, {model : model}).render();
 
                 self.$chosenSearch.append(option.$el);
             });
