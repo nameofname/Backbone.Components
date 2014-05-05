@@ -35,14 +35,14 @@ var BBC = BBC || {};
  *          - value <string> the value attribute of the option
  */
 (function(){
-            "use strict";
+        "use strict";
 
-            /**
-             * Form View encapsulates some of the basic actions of forms. Pass it a configuration object and it will render a
-             * simple form for you that syncs with the model specified. Includes options for simple validation.
-             * @type {*}
-             */
-            BBC.FormView = BBC.BaseView.extend({
+        /**
+         * Form View encapsulates some of the basic actions of forms. Pass it a configuration object and it will render a
+         * simple form for you that syncs with the model specified. Includes options for simple validation.
+         * @type {*}
+         */
+        BBC.FormView = BBC.BaseView.extend({
 
         className : 'form form-horizontal',
 
@@ -86,9 +86,6 @@ var BBC = BBC || {};
                     // Get options to pass to the sub-view.
                     config = field.viewOptions ? field.viewOptions : {};
 
-                    // Create the subView without passing a string key:
-                    subView = new viewFunction(config);
-
                     // Otherwise create the new field based on the type.
                 } else {
 
@@ -121,9 +118,6 @@ var BBC = BBC || {};
                     // Retrieve the view function from the type:
                     viewFunction = _getObjectFromString('BBC.FormView_' + field.type);
 
-                    // Create the subView without passing a string key:
-                    subView = new viewFunction(config);
-
                     // If validation rules were passed with this field, then add then to the view's validation object
                     if (field.required || field.validation_regex) {
                         this.validation[field.attribute] = {};
@@ -138,10 +132,9 @@ var BBC = BBC || {};
                     }
                 }
 
-                // Finally render the new view and add it to the subViews:
-                subView.render();
-                this.$el.append(subView.el);
-                this.subViews.add(subView);
+                // Create the subView without passing a string key. Render and add it to the subViews :
+                var view = this.subViews.add(viewFunction, config);
+                this.$el.append(view.render().$el);
 
             }, this);
 

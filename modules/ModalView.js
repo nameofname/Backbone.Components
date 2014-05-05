@@ -43,13 +43,13 @@ var BBC = BBC || {};
             if (this.options.subView) {
 
                 // Note: If the programmer passed an object to feet the subview, then pass to the subview when you init.
-                var subViewOptions = this.options.hasOwnProperty('subViewOptions') ? this.options.subViewOptions : {},
-                    innerView = new this.options.subView(subViewOptions);
+                var subViewOptions = this.options.hasOwnProperty('subViewOptions') ? this.options.subViewOptions : {};
+//                    innerView = new this.options.subView(subViewOptions);
 
-                innerView.render();
+//                innerView.render();
 
-                this.subViews.add(innerView);
-                this.$el.find('.modal-inner').append(innerView.el);
+                var view = this.subViews.add(this.options.subView, subViewOptions).render();
+                this.$el.find('.modal-inner').append(view.$el);
             }
 
             // NOTE: Replaces all other modals when appended to the DOM! Goes into the #modal-container div in footer.
