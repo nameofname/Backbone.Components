@@ -228,6 +228,7 @@ var BBC = BBC || {};
          */
         publish : function (e, args) {
             var t = this.topView();
+            args = args || [];
 
             // Add the view to the beginning of the array :
             args.unshift(this);

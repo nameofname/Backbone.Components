@@ -73,12 +73,13 @@ var BBC = BBC || {};
 
         closeAlert : function(e, callback, callbackOptions) {
             var self = this;
-            self.$el.fadeOut(function(){
+            self.$el.fadeOut(function () {
                 self.$el.remove();
                 // If a callback was included, then invoke it now:
                 if (callback && typeof callback === 'function') {
                     callback.call(this, callbackOptions);
                 }
+                self.publish('AlertView:close');
             });
         }
 
