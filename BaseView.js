@@ -208,7 +208,7 @@ var BBC = BBC || {};
 
         constructor : function (options){
 
-            var self = this;
+            options = options || {};
             this.subViews = new SubViews();
             this.subViews.init(this);
             this.parentView = options.parentView || null;
