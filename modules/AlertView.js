@@ -33,7 +33,7 @@ var BBC = BBC || {};
         tagName : 'div',
 
         // Default options are described here:
-        config : {
+        defaults : {
             type : "info",
             place : "#default-alert-container",
             message : "",
@@ -48,16 +48,20 @@ var BBC = BBC || {};
         initialize : function(options) {
 
             // Assign the options to the model config attribute.
-            _.each(this.config, function(val, key){
-                this.config[key] = options[key] ? options[key] : val;
-            }, this);
+//            _.each(this.config, function(val, key){
+//                this.config[key] = options[key] ? options[key] : val;
+//            }, this);
+
+            _.defaults(options, this.defaults);
+            this.config = options;
 
             this.template = _.template($('#alert-template').html(), null, {variable : 'options'});
         },
 
         render : function() {
-            var self = this,
-                alert = this.$el.html(this.template(this.config));
+            var self = this;
+
+            this.$el.html(this.template(this.config));
 
             $(this.config.place).append(this.$el);
 
