@@ -137,7 +137,8 @@ var BBC = BBC || {};
 //    };
 
     /**
-     * Do some callback on the array of SubViews.
+     * Do some callback on the array of SubViews. The callback function will receive the arguments [view, args]
+     *
      * @param callback - duh
      * @param args - arguments to be passed to the callback
      * @param context - the context of the callback function - used if you want to invoke methods from whatever
@@ -192,15 +193,14 @@ var BBC = BBC || {};
         }
     };
 
-//    SubViews.prototype._publish = function (string) {};
-//    SubViews.prototype._subscribe = function (string) {};
-
     /**
      * === === === === === === === === === === === === === === === === === === === === === === === === === === === ===
      * BASE VIEW is the view from which all other views in my system inherit from!!!!!!!
      * === === === === === === === === === === === === === === === === === === === === === === === === === === === ===
      * @type {*}
      */
+
+//    var EVENT_SPECIAL_NAME = '__bb_components_publish__';
     BBC.BaseView = Backbone.View.extend({
 
         // subViews is an instance of the above defined subViews. Manages your sub-views for you.
@@ -208,6 +208,7 @@ var BBC = BBC || {};
 
         constructor : function (options){
 
+            options = options || {};
             this.subViews = new SubViews();
             this.subViews.init(this);
             this.parentView = options.parentView || null;
@@ -216,6 +217,44 @@ var BBC = BBC || {};
             return this;
         },
 
+        /**
+         * Publish an event on all parent views, and sub-views. To bind on such an event - note that the first argument
+         * passed to the callback will always be the view that triggered the event.
+         * @param e - the event name
+         * @param args - an array of arguments.
+         *
+         * *Note that although you do pass args, the first param to the callback will be the view that triggered the
+         * event.
+         */
+        publish : function (e, args) {
+            var t = this.topView();
+            args = args || [];
+
+            // Add the view to the beginning of the array :
+            args.unshift(this);
+
+            t._publish(e, args);
+        },
+
+        _publish : function (eventName, args) {
+            var self = this;
+            // Trigger the intended event on THIS view
+            self.trigger(eventName, args);
+
+            // And trigger the special __bb_components_publish__ event on all sub-views.
+            if (self.subViews && self.subViews instanceof SubViews) {
+
+                self.subViews.each(function (view) {
+                    view._publish(eventName, args);
+                });
+
+            }
+        },
+
+        /**
+         * Get the view at the top of the subView tree
+         * @returns {*}
+         */
         topView : function () {
             var curr =  this.parentView ? this.parentView : null;
             var topView;
@@ -233,16 +272,6 @@ var BBC = BBC || {};
                 }
             }
             return topView;
-        },
-
-        /**
-         * Publish an event on all parent views, and sub-views.
-         * @param e
-         * @param args
-         */
-        publish : function (e, args) {
-            var t = this.topView();
-            //
         },
 
         /**
