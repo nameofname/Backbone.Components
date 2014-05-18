@@ -116,26 +116,6 @@ var BBC = BBC || {};
         return (this.lastKey) ? this.get(this.lastKey) : null;
     };
 
-//    /**
-//     * Gets the top view in the tree of views.
-//     */
-//    SubViews.prototype.top = function () {
-//        var curr =  this.currentView.parentView ? this.currentView.parentView : null;
-//        var topView;
-//
-//        if (curr === null) {
-//            return null;
-//        }
-//
-//        while (curr) {
-//            curr = curr.hasOwnProperty('parentView') ? curr.parentView : null;
-//            if (curr) {
-//                topView = curr;
-//            }
-//        }
-//        return topView;
-//    };
-
     /**
      * Do some callback on the array of SubViews. The callback function will receive the arguments [view, args]
      *

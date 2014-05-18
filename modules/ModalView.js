@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 var BBC = BBC || {};
-(function(){
+(function () {
     "use strict";
 
     var _modals = [];
