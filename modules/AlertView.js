@@ -79,6 +79,11 @@ var BBC = BBC || {};
                     callback.call(this, callbackOptions);
                 }
                 self.publish('AlertView:close');
+
+                // When the Alert is closed, remove it from the parentView (if it's a sub-view) :
+                if (this.parentView) {
+                    this.parentView.subViews.remove(this);
+                }
             });
         }
 

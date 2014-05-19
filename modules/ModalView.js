@@ -95,6 +95,23 @@ var BBC = BBC || {};
             $('.modal-bg').remove();
 
             this.publish('ModalView:close');
+
+            // When the modal gets closed, also remove it from the parentView if it is a sub-view of another view:
+            if (this.parentView) {
+                this.parentView.subViews.remove(this);
+            }
+
+        },
+
+        /**
+         * Close after "time" milliseconds
+         * @param time
+         */
+        timedClose : function (time) {
+            var self = this;
+            setTimeout(function () {
+                self.closeModal();
+            }, time);
         }
     });
 
