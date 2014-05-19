@@ -92,6 +92,29 @@ var BBC = BBC || {};
         return view;
     };
 
+
+    /**
+     * Remove a subview from the list ... of subviews.
+     * @param keyOrInstance
+     */
+    SubViews.prototype.remove = function (keyOrInstance) {
+        var view;
+        var self = this;
+
+        if (typeof keyOrInstance === 'string') {
+            view = this.get(keyOrInstance);
+        } else {
+            view = keyOrInstance;
+        }
+
+        // Loop through all the views searching for a match and delete the matching one.
+        _.each(this.List, function (currView, key) {
+            if (view === currView) {
+                delete self.List[key];
+            }
+        });
+    };
+
     /**
      * Clear out sub-views.
      */

@@ -47,11 +47,6 @@ var BBC = BBC || {};
 
         initialize : function(options) {
 
-            // Assign the options to the model config attribute.
-//            _.each(this.config, function(val, key){
-//                this.config[key] = options[key] ? options[key] : val;
-//            }, this);
-
             _.defaults(options, this.defaults);
             this.config = options;
 

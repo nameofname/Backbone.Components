@@ -16,12 +16,15 @@ var BBC = BBC || {};
      * Options :
      *      - subView
      *      - subViewOptions
+     *      - message (if not using subview)
      *      - title
      * @type {*}
      */
     BBC.ModalView = BBC.BaseView.extend({
 
         className : 'modal',
+
+        messageTemplate : _.template('<p class="lead"><%= data.message %></p>', null, {variable : 'data'}),
 
         events : {
             'click .modal-close' : 'closeModal'
@@ -51,6 +54,11 @@ var BBC = BBC || {};
 
                 var view = this.subViews.add(this.options.subView, subViewOptions).render();
                 this.$el.find('.modal-inner').append(view.$el);
+
+            // If the user did not pass subview options but they did pass a message, use the message template to
+            // display their message :
+            } else if (this.options.message) {
+                this.$el.find('.modal-inner').append(this.messageTemplate(this.options));
             }
 
             // NOTE: Replaces all other modals when appended to the DOM! Goes into the #modal-container div in footer.
