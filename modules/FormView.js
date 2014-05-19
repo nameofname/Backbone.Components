@@ -50,7 +50,7 @@ var BBC = BBC || {};
 
         initialize : function(options){
             this.fields = options.fields;
-            if (!options.autoSetFields) {
+            if (!options.hasOwnProperty('autoSetFields')) {
                 this.options.autoSetFields = true;
             }
         },
@@ -58,6 +58,8 @@ var BBC = BBC || {};
         events : {
             // TODO: add other form field types like <select>
             'change input' : 'updateModel',
+            'change textarea' : 'updateModel',
+            'change select' : 'updateModel',
             'click input.submit' : 'triggerSubmitCallback',
             'submit form' : 'triggerSubmitCallback'
         },
@@ -139,8 +141,10 @@ var BBC = BBC || {};
             }, this);
 
             // Create the submit button and add to the form:
-            var submit = _.template($('#form-submit-template').html(), {text : this.options.    submitText}, {variable : 'config'})
-            this.$el.append(submit);
+            if (this.options.submitText) {
+                var submit = _.template($('#form-submit-template').html(), {text : this.options.submitText}, {variable : 'config'})
+                this.$el.append(submit);
+            }
 
             return this;
         },
@@ -152,20 +156,23 @@ var BBC = BBC || {};
          * @param e
          */
         updateModel : function(e) {
-            var val = $(e.target).val(),
-                name = $(e.target).attr('name'),
-                obj = {};
+            var val = $(e.target).val();
+            var name = $(e.target).attr('name');
+            var type = $(e.target).attr('type');
+            var obj = {};
 
-            if (this.options.autoSetFields) {
-                obj[name] = val;
-                this.model.set(obj);
+            if (type !== 'submit') {
+
+                if (this.options.autoSetFields) {
+                    obj[name] = val;
+                    this.model.set(obj);
+                }
+
+                // Invoke the changeCallback if it was passed.
+                if (typeof this.options.changeCallback === 'function') {
+                    this.options.changeCallback.apply(this, [e, name, val, this.model ])
+                }
             }
-
-            // Invoke the changeCallback if it was passed.
-            if (typeof this.options.changeCallback === 'function') {
-                this.options.changeCallback.apply(this, [e, name, val, this.model ])
-            }
-
         },
 
         /**

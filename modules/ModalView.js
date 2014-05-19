@@ -13,6 +13,10 @@ var BBC = BBC || {};
 
     /**
      * Modal view is just a basic modal, with a close button. It has styling, accepts a sub-view that will go inside it.
+     * Options :
+     *      - subView
+     *      - subViewOptions
+     *      - title
      * @type {*}
      */
     BBC.ModalView = BBC.BaseView.extend({
@@ -25,7 +29,7 @@ var BBC = BBC || {};
 
         initialize : function(options){
             // Todo - the options for the modal view have to ... do stuff.
-            this.template = _.template($('#modal-template').html(), null, {variable : 'nothing_doesnt_matter'});
+            this.template = _.template($('#modal-template').html(), null, {variable : 'data'});
         },
 
         render : function(){
@@ -37,16 +41,13 @@ var BBC = BBC || {};
             });
             _modals = [];
 
-            this.$el.append(this.template({}));
+            this.$el.append(this.template(this.options));
 
             // If a sub-view was passed, render that.
             if (this.options.subView) {
 
                 // Note: If the programmer passed an object to feet the subview, then pass to the subview when you init.
                 var subViewOptions = this.options.hasOwnProperty('subViewOptions') ? this.options.subViewOptions : {};
-//                    innerView = new this.options.subView(subViewOptions);
-
-//                innerView.render();
 
                 var view = this.subViews.add(this.options.subView, subViewOptions).render();
                 this.$el.find('.modal-inner').append(view.$el);
@@ -63,6 +64,8 @@ var BBC = BBC || {};
 
             // Add this to the private modals array so that if another modal is called this one will be removed.
             _modals.push(this);
+
+            this.publish('ModalView:open');
 
             return this;
         },
@@ -82,6 +85,8 @@ var BBC = BBC || {};
                 self.remove();
             }
             $('.modal-bg').remove();
+
+            this.publish('ModalView:close');
         }
     });
 

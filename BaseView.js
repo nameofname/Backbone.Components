@@ -180,7 +180,6 @@ var BBC = BBC || {};
      * @type {*}
      */
 
-//    var EVENT_SPECIAL_NAME = '__bb_components_publish__';
     BBC.BaseView = Backbone.View.extend({
 
         // subViews is an instance of the above defined subViews. Manages your sub-views for you.
@@ -252,6 +251,55 @@ var BBC = BBC || {};
                 }
             }
             return topView;
+        },
+
+        /**
+         * To use modalize : create a property of your view which must have the following :
+         *      - subView
+         * Optiaonally you can add :
+         *      - subViewOptions
+         *      - openCallback
+         *      - closeCallback
+         */
+        modalize : function () {
+            // Check that the modalOptions are set :
+            var self = this;
+            var required = ['subView'];
+
+            if (this.modalOptions) {
+                for (var i=0; i<required.length; i++) {
+                    var prop = required[i];
+                    if (!this.modalOptions.hasOwnProperty(prop) || typeof this.modalOptions[prop] === 'undefined') {
+                        throw new Error("modalOptions." + prop + " is required to use modalize.");
+                    }
+                }
+
+            } else {
+                throw new Error("modalOptions is required to use modalize.");
+            }
+
+            // If BBC.ModalView  is not loaded, then yell at the programmer :
+            if (BBC.ModalView === 'undefined') {
+                throw new Error("BBC.ModalView is required to use modalize.");
+            }
+
+            // Create the instance of the ModalView using the construct property as the subview :
+            var modal = new BBC.ModalView(this.modalOptions);
+
+            // Bind to the open and close callbacks :
+            if (self.modalOptions.openCallback) {
+                modal.on('ModalView:open', function () {
+                    self.modalOptions.openCallback.call(this);
+                });
+            }
+
+            if (self.modalOptions.closeCallback) {
+                modal.on('ModalView:close', function () {
+                    self.modalOptions.closeCallback.call(this);
+                });
+            }
+
+            modal.render();
         },
 
         /**
