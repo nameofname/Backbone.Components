@@ -284,7 +284,6 @@ var BBC = BBC || {};
             }
 
             // Create the instance of the ModalView using the construct property as the subview :
-//            var modal = new BBC.ModalView(this.modalOptions);
             var modal = this.subViews.add('modal', BBC.ModalView, this.modalOptions);
 
             // Bind to the open and close callbacks :
