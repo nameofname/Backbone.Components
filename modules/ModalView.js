@@ -80,6 +80,7 @@ var BBC = BBC || {};
 
         /**
          * Removes and closes the modal.
+         * Note** Also removes from the parent's subViews. 
          * @param duration <int> - milliseconds to close using jQuery fadeOut()
          */
         closeModal : function(duration) {

@@ -70,6 +70,13 @@ var BBC = BBC || {};
             return this;
         },
 
+        /**
+         * Closing the alert removes it from the DOM and also removes it from the parent viwe's sub-views (if it is a
+         * sub view)
+         * @param e
+         * @param callback
+         * @param callbackOptions
+         */
         closeAlert : function(e, callback, callbackOptions) {
             var self = this;
             self.$el.fadeOut(function () {
