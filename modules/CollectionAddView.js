@@ -33,7 +33,7 @@
             _.defaults(options, this.defaults);
             this.options = options;
 
-            this.template = _.template($('#collection-add-template').html, null, {varaible : 'data'});
+            this.template = _.template($('#collection-add-template').html(), null, {varaible : 'data'});
 
             return this;
         },
