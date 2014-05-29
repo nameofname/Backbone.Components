@@ -326,6 +326,23 @@ var BBC = BBC || {};
         },
 
         /**
+         * Applies a template passed in as option to the view. To use, pass one of the following options to your view:
+         *      - template <function>
+         *      - templateId <string>
+         *
+         * Note*** If you want a variable name to be applied to your template and you are using templateId, then add
+         * the attribute "data-varName" to your template.
+         */
+        applyTemplate : function () {
+            var temp;
+            if (this.options.template && typeof this.options.template === 'function') {
+                temp = this.options.template;
+            } else if (this.options.templateId && typeof this.options.templateId === 'string') {
+                temp = _.template($(this.options.templateId).html(), null, {})
+            }
+        },
+
+        /**
          * Kills an event, common use in views where events are triggered on links, etc.
          * @param e - the event
          */
