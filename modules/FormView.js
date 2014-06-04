@@ -49,7 +49,16 @@ var BBC = BBC || {};
         validation : {}, // if validation rules are passed with the fields array, then they will be added here.
 
         initialize : function(options){
-            this.fields = options.fields;
+            if (typeof options.fields !== 'options.fields' && typeof this.fields !== 'undefined') {
+                this.fields = _.extend(this.fields, options.fields);
+            } else {
+                this.fields = this.fields ? this.fields : options.fields;
+            }
+
+            if (typeof this.fields === 'undefined') {
+                throw new Error('Form view is useless without fields. Specify on the view as fields or pass as options.');
+            }
+
             if (!options.hasOwnProperty('autoSetFields')) {
                 this.options.autoSetFields = true;
             }

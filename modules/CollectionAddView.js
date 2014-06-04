@@ -8,7 +8,7 @@
     "use strict";
 
     /**
-     * CollectionAddView allows you to instansiate sub-views by clicking the add button.
+     * CollectionAddView allows you to instantiate sub-views by clicking the add button.
      * You can specify the subview, the options, and impose a limit on the number that can be added.
      * Options :
      *      - collection
@@ -41,10 +41,17 @@
         render : function () {
             this.$el.html(this.template(this.options));
 
-            // Loop over the collection passed and create a new sub-view for each :
-            this.collection.each(function (model, key) {
-                self.addNewSub(model);
-            });
+            if (this.collection.length) {
+                // Loop over the collection passed and create a new sub-view for each :
+                this.collection.each(function (model, key) {
+                    self.addNewSub(model);
+                });
+            } else {
+
+                // In this case - init an empty model so we can start out with at least 1 view :
+                this.collection.add({});
+                this.addNewSub(this.collection.at(0));
+            }
             return this;
         },
 
