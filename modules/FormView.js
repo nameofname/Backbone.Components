@@ -81,66 +81,43 @@ var BBC = BBC || {};
                 var viewFunction; // func to create the new subview
                 var config; // configuration object for new subView
 
-                // If a view was passed, then create that
-                if (field.view) {
-
-                    // If a string was passed as the view, then parse out that information.
-                    if (typeof field.view === 'string') {
-                        viewFunction = _getObjectFromString(field.view);
-
-                    } else {
-                        // Assume that the passed view is an object here.
-                        viewFunction = field.view;
-                    }
-
-                    // Get options to pass to the sub-view.
-                    config = field.viewOptions ? field.viewOptions : {};
-
-                    // Otherwise create the new field based on the type.
-                } else {
-
-                    // If the type passed is not valid, then throw an error.
-                    if (!field.type || !(_.contains(['input', 'select', 'textarea', 'password'], field.type))) {
-                        throw new Error('A valid type is required to init a form view sub-field: input / select / textarea / password')
+                // If the type passed is not valid, then throw an error.
+                if (!field.type) {
+                    throw new Error('A type attribute is required to init a form view sub-field.')
 
                     // If a valid attribute was not passed, also throw an error.
-                    } else if (!field.attribute || typeof field.attribute !== 'string') {
-                        throw new Error('A valid attribute name must be provided for form view sub-views.');
-                    }
+                }
 
-//                    // Create the configuration object to pass to the subView:
-//                    config = {
-//                        type : field.type,
-//                        attribute : field.attribute // this is used in the form field name to sync with the model.
-//                    };
-//
-//                    // If the label was not passed then use the attribute.
-//                    config.label = field.label || BBC.UppercaseFirstLetters(field.attribute);
-//
-//                    // Assign the options to the config only if it is of type "select"
-//                    if (field.type === 'select') {
-//                        config.options = field.options ? field.options : [];
-//                    }
+                if (!field.attribute || typeof field.attribute !== 'string') {
+                    throw new Error('A valid attribute name must be provided for form view sub-views.');
+                }
 
-                    config = _.clone(field);
-
-                    // Get the currentValue to display in the form field:
-                    config.currentValue = this.model.get(field.attribute);
-
+                // If the type is one of the pre-defined aliases, then use the coresponding pre-defined view :
+                if (_.contains(['input', 'select', 'textarea', 'password'], field.type)) {
                     // Retrieve the view function from the type:
                     viewFunction = _getObjectFromString('BBC.FormView_' + field.type);
+                } else {
 
-                    // If validation rules were passed with this field, then add then to the view's validation object
-                    if (field.required || field.validation_regex) {
-                        this.validation[field.attribute] = {};
+                    // Otherwise, use the type as the view constructor :
+                    viewFunction = field.type;
+                    viewFunction = (typeof viewFunction === 'function') ? viewFunction : _getObjectFromString(viewFunction);
+                }
 
-                        // Set the validation_regex and required fields on validation here:
-                        if (field.hasOwnProperty('required')) {
-                            this.validation[field.attribute].required = field.required;
-                        }
-                        if (field.hasOwnProperty('required')) {
-                            this.validation[field.attribute].validation_regex = field.validation_regex;
-                        }
+                config = _.clone(field);
+
+                // Get the currentValue to display in the form field:
+                config.currentValue = this.model.get(field.attribute);
+
+                // If validation rules were passed with this field, then add then to the view's validation object
+                if (field.required || field.validation_regex) {
+                    this.validation[field.attribute] = {};
+
+                    // Set the validation_regex and required fields on validation here:
+                    if (field.hasOwnProperty('required')) {
+                        this.validation[field.attribute].required = field.required;
+                    }
+                    if (field.hasOwnProperty('required')) {
+                        this.validation[field.attribute].validation_regex = field.validation_regex;
                     }
                 }
 
