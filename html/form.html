@@ -27,7 +27,13 @@
     <label class="control-label"><%= config.label %></label>
     <div class="controls">
         <select>
-            <!-- TODO: ADD OPTIONS HERE!!! -->
+            <% console.log(config) %>
+            <% if (typeof config.placeholder === 'string') {%>
+            <option><%= config.placeholder %></option>
+            <% } %>
+            <% _.each(config.options, function (opt) { %>
+            <option value="<%= opt.value %>"><%= opt.name %></option>
+            <% }); %>
         </select>
     </div>
 </script>

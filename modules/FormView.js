@@ -78,9 +78,8 @@ var BBC = BBC || {};
             // Loop through the fields. If the field has a view property, then render that, and add to the subs.
             _.each(this.fields, function(field){
 
-                var viewFunction, // func to create the new subview
-                    config, // configuration object for new subView
-                    subView; // placeholder for new subView
+                var viewFunction; // func to create the new subview
+                var config; // configuration object for new subView
 
                 // If a view was passed, then create that
                 if (field.view) {
@@ -109,22 +108,24 @@ var BBC = BBC || {};
                         throw new Error('A valid attribute name must be provided for form view sub-views.');
                     }
 
-                    // Create the configuration object to pass to the subView:
-                    config = {
-                        type : field.type,
-                        attribute : field.attribute // this is used in the form field name to sync with the model.
-                    };
+//                    // Create the configuration object to pass to the subView:
+//                    config = {
+//                        type : field.type,
+//                        attribute : field.attribute // this is used in the form field name to sync with the model.
+//                    };
+//
+//                    // If the label was not passed then use the attribute.
+//                    config.label = field.label || BBC.UppercaseFirstLetters(field.attribute);
+//
+//                    // Assign the options to the config only if it is of type "select"
+//                    if (field.type === 'select') {
+//                        config.options = field.options ? field.options : [];
+//                    }
 
-                    // If the label was not passed then use the attribute.
-                    config.label = field.label || BBC.UppercaseFirstLetters(field.attribute);
+                    config = _.clone(field);
 
                     // Get the currentValue to display in the form field:
                     config.currentValue = this.model.get(field.attribute);
-
-                    // Assign the options to the config only if it is of type "select"
-                    if (field.type === 'select') {
-                        config.options = field.options ? field.options : [];
-                    }
 
                     // Retrieve the view function from the type:
                     viewFunction = _getObjectFromString('BBC.FormView_' + field.type);
@@ -151,7 +152,7 @@ var BBC = BBC || {};
 
             // Create the submit button and add to the form:
             if (this.options.submitText) {
-                var submit = _.template($('#form-submit-template').html(), {text : this.options.submitText}, {variable : 'config'})
+                var submit = _.template($('#form-submit-template').html(), {text : this.options.submitText}, {variable : 'config'});
                 this.$el.append(submit);
             }
 
@@ -243,13 +244,20 @@ var BBC = BBC || {};
         className : 'control-group',
 
         initialize : function(options) {
+
+            // re-name options to config ... because options.optins is confusing.
             this.config = options;
+
             // Get the template by concatting the type with ... what I know is in tege HTML templates.
             this.template = _.template($('#form-'+ options.type +'-template').html(), null, {variable : 'config'});
         },
 
         render : function() {
-            this.$el.html(this.template(this.config));
+            var obj = _.clone(this.config);
+            if (typeof this.config.options === 'function') {
+                obj.options = this.config.options();
+            }
+            this.$el.html(this.template(obj));
             return this;
         }
     });
