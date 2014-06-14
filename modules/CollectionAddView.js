@@ -39,6 +39,7 @@
         },
 
         render : function () {
+            var self = this;
             this.$el.html(this.template(this.options));
 
             if (this.collection.length) {
@@ -47,6 +48,9 @@
                     self.addNewSub(model);
                 });
             } else {
+
+                var model1 = new self.collection.model();
+                self.addNewSub(model1);
 
                 // In this case - init an empty model so we can start out with at least 1 view :
                 this.collection.add({});
@@ -68,6 +72,7 @@
 
             // Do not add a new sub-view if the limit has been reached :
             if (this._reachedLimit()) {
+                this.$('.collection-add-new').disabled = true;
                 return false;
             }
 
@@ -95,7 +100,7 @@
          */
         _reachedLimit : function () {
             var len = _.size(this.subViews.List);
-            if (this.options.limit && len >= len) {
+            if (this.options.limit && len >= this.options.limit) {
                 return true;
             }
             return false;

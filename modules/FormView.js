@@ -48,6 +48,10 @@ var BBC = BBC || {};
 
         validation : {}, // if validation rules are passed with the fields array, then they will be added here.
 
+        defaultOptions : {
+            autoSetFields : true
+        },
+
         initialize : function(options){
             if (typeof options.fields !== 'options.fields' && typeof this.fields !== 'undefined') {
                 this.fields = _.extend(this.fields, options.fields);
@@ -59,16 +63,10 @@ var BBC = BBC || {};
                 throw new Error('Form view is useless without fields. Specify on the view as fields or pass as options.');
             }
 
-            if (!options.hasOwnProperty('autoSetFields')) {
-                this.options.autoSetFields = true;
-            }
+            this.options = _.defaults(options, this.defaultOptions);
         },
 
         events : {
-            // TODO: add other form field types like <select>
-            'change input' : 'updateModel',
-            'change textarea' : 'updateModel',
-            'change select' : 'updateModel',
             'click input.submit' : 'triggerSubmitCallback',
             'submit form' : 'triggerSubmitCallback'
         },
@@ -104,6 +102,11 @@ var BBC = BBC || {};
                 }
 
                 config = _.clone(field);
+                // Default the autoSetFields attribute of the config to true. Model is this.model
+                config = _.defaults(config, {
+                    model : this.model,
+                    autoSetFields : true
+                });
 
                 // Get the currentValue to display in the form field:
                 config.currentValue = this.model.get(field.attribute);
@@ -137,6 +140,55 @@ var BBC = BBC || {};
         },
 
         /**
+         * Executes the Callback for clicking the submit button passing the parameters [e, model]
+         * @param e
+         */
+        triggerSubmitCallback : function(e) {
+            if (typeof this.options.submitCallback === 'function') {
+                this.options.submitCallback.apply(this, [e, this.model]);
+            }
+        }
+
+    });
+
+
+    /**
+     * Input, textarea and password form fields use the same view.
+     * @type {*}
+     */
+    BBC.FormView_BasicInput = BBC.BaseView.extend({
+
+        className : 'control-group',
+        type : null, // Views that extend FormView_BasicInput MUST declare a type. ie. 'text' or 'select'
+
+        events : {
+            'change' : 'triggerChange'
+        },
+
+        initialize : function(options) {
+            this.config = options;
+
+            this.config = _.defaults(this.config, {
+                autoSetFields : true
+            });
+
+            // Get the template by concatting the type with ... what I know is in tege HTML templates.
+            options.type = options.type ? options.type : this.type;
+                this.template = _.template($('#form-'+ options.type +'-template').html(), null, {variable : 'config'});
+        },
+
+        render : function() {
+            this.$el.html(this.template(this.config));
+            return this;
+        },
+
+        triggerChange : function(e) {
+            this.updateModel(e);
+
+            this.parentView.trigger('change', e);
+        },
+
+        /**
          * Update the model with the value from the corresponding form field.
          * Note: the form field must have the same name as the field you are trying to set on it. If you do not want
          * the value to be automatically set, then pass autoSetFields = false in your config.
@@ -162,54 +214,18 @@ var BBC = BBC || {};
             }
         },
 
-        /**
-         * Executes the Callback for clicking the submit button passing the parameters [e, model]
-         * @param e
-         */
-        triggerSubmitCallback : function(e) {
-            if (typeof this.options.submitCallback === 'function') {
-                this.options.submitCallback.apply(this, [e, this.model]);
-            }
-        }
-
-    });
-
-
-    /**
-     * Input, textarea and password form fields use the same view.
-     * @type {*}
-     */
-    BBC.FormView_BasicInput = BBC.BaseView.extend({
-
-        className : 'control-group',
-
-        events : {
-            'change input' : 'triggerChange',
-            'change textarea' : 'triggerChange',
-            'change select' : 'triggerChange'
-        },
-
-        initialize : function(options) {
-            this.config = options;
-            // Get the template by concatting the type with ... what I know is in tege HTML templates.
-            this.template = _.template($('#form-'+ options.type +'-template').html(), null, {variable : 'config'});
-        },
-
-        render : function() {
-            this.$el.html(this.template(this.config));
-            return this;
-        },
-
-        triggerChange : function(e) {
-            // TODO: PASS THE VALUE, ETC WITH THIS!
-            this.parentView.trigger('change', e);
-        }
     });
 
     // input, textarea and password extend BBC.FormView_BasicInput
-    BBC.FormView_input = BBC.FormView_BasicInput.extend({});
-    BBC.FormView_textarea = BBC.FormView_BasicInput.extend({});
-    BBC.FormView_password = BBC.FormView_BasicInput.extend({});
+    BBC.FormView_input = BBC.FormView_BasicInput.extend({
+        type : 'input'
+    });
+    BBC.FormView_textarea = BBC.FormView_BasicInput.extend({
+        type : 'textarea'
+    });
+    BBC.FormView_password = BBC.FormView_BasicInput.extend({
+        type : 'password'
+    });
 
     /**
      * The select view also inherits from the BBC.FormView_BasicInput function, however, it has to do the extra work
@@ -219,6 +235,7 @@ var BBC = BBC || {};
     BBC.FormView_select = BBC.FormView_BasicInput.extend({
 
         className : 'control-group',
+        type : 'select',
 
         initialize : function(options) {
 
