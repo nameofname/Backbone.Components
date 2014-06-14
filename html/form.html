@@ -2,7 +2,8 @@
 <script type="text/template" xmlns="http://www.w3.org/1999/html" id="form-input-template" enctype="multipart/form-data">
     <label class="control-label"><%= config.label %></label>
     <div class="controls">
-        <input type="text" name="<%= config.attribute %>" placeholder="<%= config.currentValue %>">
+        <input type="text" name="<%= config.attribute %>" placeholder="<%= config.currentValue %>"
+               value="<%= config.currentValue ? config.currentValue : '' %>">
     </div>
 </script>
 
