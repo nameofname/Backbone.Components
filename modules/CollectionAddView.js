@@ -49,9 +49,6 @@
                 });
             } else {
 
-                var model1 = new self.collection.model();
-                self.addNewSub(model1);
-
                 // In this case - init an empty model so we can start out with at least 1 view :
                 this.collection.add({});
                 this.addNewSub(this.collection.at(0));
