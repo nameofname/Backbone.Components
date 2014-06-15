@@ -260,6 +260,14 @@ var BBC = BBC || {};
             }
             this.$el.html(this.template(obj));
             return this;
+        },
+
+        events : {
+            'click' : 'save'
+        },
+
+        save : function () {
+            this.publish('formView:save');
         }
     });
 
@@ -267,10 +275,11 @@ var BBC = BBC || {};
      * Submit button sub-view does almost nothing... almost!
      * @type {*|void|extend|extend|extend|extend}
      */
-    BBC.FormView_submit = BBC.FormView_BasicInput.extend({
-//        initialize : function (options) {
-//            this.template = _.template($('#form-submit-template').html(), null, {variable : 'config'});
-//        }
+    BBC.FormView_submit = BBC.BaseView.extend({
+        initialize : function (options) {
+            this.applyTemplate('#form-submit-template');
+            return this;
+        }
     });
 
     /**

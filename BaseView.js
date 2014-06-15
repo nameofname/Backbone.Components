@@ -220,6 +220,16 @@ var BBC = BBC || {};
         },
 
         /**
+         * You will likely ver-ride this basic render function in many cases
+         */
+        render: function () {
+            if (typeof this.template === 'function' && this.model instanceof Backbone.Model) {
+                this.$el.html(this.template(this.model.toJSON));
+                }
+            return this;
+        },
+
+        /**
          * Publish an event on all parent views, and sub-views. To bind on such an event - note that the first argument
          * passed to the callback will always be the view that triggered the event.
          * @param e - the event name
@@ -333,13 +343,20 @@ var BBC = BBC || {};
          * Note*** If you want a variable name to be applied to your template and you are using templateId, then add
          * the attribute "data-varName" to your template.
          */
-        applyTemplate : function () {
+        applyTemplate : function (selector) {
             var temp;
             if (this.options.template && typeof this.options.template === 'function') {
                 temp = this.options.template;
             } else if (this.options.templateId && typeof this.options.templateId === 'string') {
-                temp = _.template($(this.options.templateId).html(), null, {})
+                temp = _.template($('#' + this.options.templateId).html(), null, {variable : 'data'})
+            } else if (selector && typeof selector === 'string') {
+                temp = _.template($(selector).html(), null, {variable : 'data'})
             }
+
+            if (typeof temp !== 'undefined') {
+                this.template = temp;
+            }
+            return this;
         },
 
         /**
