@@ -28,7 +28,6 @@
     <label class="control-label"><%= config.label %></label>
     <div class="controls">
         <select>
-            <% console.log(config) %>
             <% if (typeof config.placeholder === 'string') {%>
             <option><%= config.placeholder %></option>
             <% } %>
@@ -40,8 +39,8 @@
 </script>
 
 <!-- Form Submit Button: -->
-<script type="text/template" xmlns="http://www.w3.org/1999/html" id="form-submit-template" enctype="multipart/form-data">
+    <script type="text/template" xmlns="http://www.w3.org/1999/html" id="form-submit-template" enctype="multipart/form-data">
     <div class="controls">
-        <input class='btn submit' type='submit' name='<%= config.text %>' value='<%= config.text %>' />
+        <input class='btn submit' type='submit' name='<%= config.text %>' value='<%= config.text ? config.text : "Submit" %>' />
     </div>
 </script>

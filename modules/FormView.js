@@ -35,18 +35,21 @@ var BBC = BBC || {};
  *          - value <string> the value attribute of the option
  */
 (function(){
-        "use strict";
+    "use strict";
 
-        /**
-         * Form View encapsulates some of the basic actions of forms. Pass it a configuration object and it will render a
-         * simple form for you that syncs with the model specified. Includes options for simple validation.
-         * @type {*}
-         */
-        BBC.FormView = BBC.BaseView.extend({
+    /**
+     * Form View encapsulates some of the basic actions of forms. Pass it a configuration object and it will render a
+     * simple form for you that syncs with the model specified. Includes options for simple validation.
+     * @type {*}
+     */
+    BBC.FormView = BBC.BaseView.extend({
 
         className : 'form form-horizontal',
 
         validation : {}, // if validation rules are passed with the fields array, then they will be added here.
+
+        // Aliases for construct attribute when creating field sub-views. The following types are pre-defined.
+        typeAliases : ['input', 'select', 'textarea', 'password', 'submit'],
 
         defaultOptions : {
             autoSetFields : true
@@ -83,15 +86,19 @@ var BBC = BBC || {};
                 if (!field.type) {
                     throw new Error('A type attribute is required to init a form view sub-field.')
 
-                    // If a valid attribute was not passed, also throw an error.
                 }
 
+                // If a valid attribute was not passed, also throw an error.
                 if (!field.attribute || typeof field.attribute !== 'string') {
-                    throw new Error('A valid attribute name must be provided for form view sub-views.');
+
+                    // Unless it's the submit button ...
+                    if (field.type !== 'submit') {
+                        throw new Error('A valid attribute name must be provided for form view sub-views.');
+                    }
                 }
 
                 // If the type is one of the pre-defined aliases, then use the coresponding pre-defined view :
-                if (_.contains(['input', 'select', 'textarea', 'password'], field.type)) {
+                if (_.contains(this.typeAliases, field.type)) {
                     // Retrieve the view function from the type:
                     viewFunction = _getObjectFromString('BBC.FormView_' + field.type);
                 } else {
@@ -256,6 +263,15 @@ var BBC = BBC || {};
         }
     });
 
+    /**
+     * Submit button sub-view does almost nothing... almost!
+     * @type {*|void|extend|extend|extend|extend}
+     */
+    BBC.FormView_submit = BBC.FormView_BasicInput.extend({
+//        initialize : function (options) {
+//            this.template = _.template($('#form-submit-template').html(), null, {variable : 'config'});
+//        }
+    });
 
     /**
      *
