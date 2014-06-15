@@ -279,6 +279,14 @@ var BBC = BBC || {};
         initialize : function (options) {
             this.applyTemplate('#form-submit-template');
             return this;
+        },
+
+        events : {
+            'click input' : 'save'
+        },
+
+        save : function(e) {
+            this.publish('FormView:save', [e, this.model]);
         }
     });
 
