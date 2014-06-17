@@ -286,7 +286,7 @@ var BBC = BBC || {};
         },
 
         save : function(e) {
-            this.publish('FormView:save', [e, this.model]);
+            this.publish('FormView:save', this.model, e);
         }
     });
 

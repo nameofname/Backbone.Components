@@ -12,6 +12,17 @@ var BBC = BBC || {};
     /**
      * Dynamic search select view. See the defaults below for configuration options.
      * Note: You can hook into the change event on the view by binding on the event "dynamic-change"
+     * "dynamic-change" events will receive the parameters : [data, model]
+     *
+     * Options :
+     *      - url <str>
+     *      - model <BB.Model> -- if model is passed it will be set with whatever values from the selected model.
+     *      - target - jquery element -- where to place the chosen
+     *      - placeholder - <str> placeholder text
+     *      - parseCollection <function> -- parse method to apply to the anonymous collection that will be the
+     *              results set.
+     *      - generateSearchParams - <function> -- function to generate a search object based on input value. Receivs
+     *              the argument "value". Example : function (value) {return {query : value};}
      *
      * @type {*}
      */
@@ -40,7 +51,10 @@ var BBC = BBC || {};
         },
 
         // User configs will be merged with defaults here:
-        config : {},
+        config : {
+            placeholder : 'Begin typing...',
+            className : 'dynamic-search-select'
+        },
 
         // Reference to the timeout object for searches:
         searchTimeout : null,
@@ -57,7 +71,7 @@ var BBC = BBC || {};
             this.template = _.template(this.templateTxt, null, {variable : 'options'});
 
             // Set up configurations via merge:
-            this.config = _.extend(this.config, options);
+            this.config = _.defaults((options || {}), this.config);
 
             // The user must specify a search endpoint. If they do not, do not allow them ot instansiate:
             if (!this.config.url) {
@@ -84,6 +98,12 @@ var BBC = BBC || {};
             self.$chosenSearch = self.$('select').chosen().change(function(e, data){
                 var selectedModel = self.searchCollection.get(data.selected);
                 self.publish('dynamic-change', e, data, selectedModel);
+
+                // If a model was passed as a part of the options, then set it with whatever model data we got from
+                // the sub-view.
+                if (self.model) {
+                    self.model.set(selectedModel.toJSON());
+                }
             });
 
             // Set keyup event on the chozen input field to do keyword search:

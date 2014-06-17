@@ -247,7 +247,6 @@ var BBC = BBC || {};
             args.unshift(this);
             args.unshift(eventName);
 
-//            debugger;
             t._publish.apply(t, arguments);
         },
 
@@ -259,8 +258,6 @@ var BBC = BBC || {};
                 throw new Error('The first argument to publish() must be a string event name.');
             }
 
-//            debugger;
-            // TODO THIS IS NOT WORKING!?!?!
             self.trigger.apply(this, args);
 
             // And trigger event on all sub-views.
