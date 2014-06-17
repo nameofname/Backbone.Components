@@ -74,7 +74,7 @@ var BBC = BBC || {};
             'submit form' : 'triggerSubmitCallback'
         },
 
-        render : function(){
+        render : function () {
 
             // Loop through the fields. If the field has a view property, then render that, and add to the subs.
             _.each(this.fields, function(field){
@@ -219,7 +219,7 @@ var BBC = BBC || {};
                     this.options.changeCallback.apply(this, [e, name, val, this.model ])
                 }
             }
-        },
+        }
 
     });
 

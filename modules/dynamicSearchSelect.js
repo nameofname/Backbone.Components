@@ -52,9 +52,6 @@ var BBC = BBC || {};
         searchedValue : null,
 
         initialize : function(options) {
-            // Set cached jQuery select object:
-//            this.$select = options.select;
-
             // Create simple template:
             this.templateTxt = '<select class="dynamic-search chzn-select"><option value=""></option></select>';
             this.template = _.template(this.templateTxt, null, {variable : 'options'});
@@ -86,7 +83,7 @@ var BBC = BBC || {};
             // On chosen change, grab the passed data and trigger an event on this view.
             self.$chosenSearch = self.$('select').chosen().change(function(e, data){
                 var selectedModel = self.searchCollection.get(data.selected);
-                self.trigger('dynamic-change', e, data, selectedModel);
+                self.publish('dynamic-change', e, data, selectedModel);
             });
 
             // Set keyup event on the chozen input field to do keyword search:
