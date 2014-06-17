@@ -238,26 +238,36 @@ var BBC = BBC || {};
          * *Note that although you do pass args, the first param to the callback will be the view that triggered the
          * event.
          */
-        publish : function (e, args) {
+        publish : function () {
             var t = this.topView();
-            args = args || [];
+            var args = Array.prototype.slice.call(arguments);
 
             // Add the view to the beginning of the array :
+            var eventName = args.shift();
             args.unshift(this);
+            args.unshift(eventName);
 
-            t._publish(e, args);
+//            debugger;
+            t._publish.apply(t, arguments);
         },
 
-        _publish : function (eventName, args) {
+        _publish : function (name) {
             var self = this;
-            // Trigger the intended event on THIS view
-            self.trigger(eventName, args);
+            var args = Array.prototype.slice.call(arguments);
 
-            // And trigger the special __bb_components_publish__ event on all sub-views.
+            if (typeof name !== 'string') {
+                throw new Error('The first argument to publish() must be a string event name.');
+            }
+
+//            debugger;
+            // TODO THIS IS NOT WORKING!?!?!
+            self.trigger.apply(this, args);
+
+            // And trigger event on all sub-views.
             if (self.subViews && self.subViews instanceof SubViews) {
 
                 self.subViews.each(function (view) {
-                    view._publish(eventName, args);
+                    view._publish.apply(view, args);
                 });
 
             }
