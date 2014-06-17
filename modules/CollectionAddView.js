@@ -66,6 +66,7 @@
          * @param model
          */
         addNewSub : function (model) {
+            var newModel;
 
             // Do not add a new sub-view if the limit has been reached :
             if (this._reachedLimit()) {
@@ -74,7 +75,18 @@
             }
 
             // Use the model passed in OR create a new model based on the options :
-            var newModel = model ? model : new this.options.collection.model({});
+            if (model instanceof Backbone.Model) {
+                this.options.collection.push(model);
+                newModel = model;
+            } else {
+                newModel = this.options.collection.create({});
+            }
+
+            // first make sure the collection is initialized on the parent model:
+            if (typeof this.model.get(this.options.attribute) === 'undefined') {
+                this.model.set(this.options.attribute, this.options.collection)
+            }
+
             var subViewOptions = this.options.subViewOptions ? this.options.subViewOptions : {};
             // Add the new model to the subview options.
             _.extend(subViewOptions, {
