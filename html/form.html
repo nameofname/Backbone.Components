@@ -1,4 +1,4 @@
-<!-- Form input: -->
+<!-- Form input - control style : -->
 <script type="text/template" id="form-control-input-template" data-varName="config">
     <label class="control-label"><%= config.label %></label>
     <div class="controls">
@@ -7,7 +7,7 @@
     </div>
 </script>
 
-<!-- Form textarea: -->
+<!-- Form textarea - control style : -->
 <script type="text/template" id="form-control-textarea-template" data-varName="config">
     <label class="control-label"><%= config.label %></label>
     <div class="controls">
@@ -15,7 +15,7 @@
     </div>
 </script>
 
-<!-- Form password: -->
+<!-- Form password - control style : -->
 <script type="text/template" id="form-control-password-template" data-varName="config">
     <label class="control-label"><%= config.label %></label>
     <div class="controls">
@@ -23,7 +23,7 @@
     </div>
 </script>
 
-<!-- Form select: -->
+<!-- Form select - control style : -->
 <script type="text/template" id="form-control-select-template" data-varName="config">
     <label class="control-label"><%= config.label %></label>
     <div class="controls">
@@ -38,7 +38,7 @@
     </div>
 </script>
 
-<!-- Form Submit Button: -->
+<!-- Form Submit Button - control style : -->
     <script type="text/template" id="form-control-submit-template" data-varName="config">
     <div class="controls">
         <input class='btn submit' type='submit' name='<%= data.text %>' value='<%= data.text ? data.text : "Submit" %>' />
@@ -97,7 +97,5 @@
 
 <!-- Form Submit Button: -->
 <script type="text/template" id="form-submit-template" data-varname="config" data-varName="config">
-    <div class="controls">
-        <input class='btn submit' type='submit' name='<%= config.text %>' value='<%= config.text ? config.text : "Submit" %>' />
-    </div>
+    <input class='btn submit' type='submit' name='<%= config.text %>' value='<%= config.text ? config.text : "Submit" %>' />
 </script>

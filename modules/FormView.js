@@ -14,7 +14,6 @@ var BBC = BBC || {};
  *
  * - model <Backbone.Model>
  * - type <string> (horizontal / inline)
- * - submitText <string> the submit button text. Defaults to "Submit"
  * - submitCallback <function> A function to be called on submit. Will be passed the params: [e, model]
  * - autoSetFields <bool> - pass false if you don't want form fields to be automatically set on the model on change
  *      event. Defaults to true.
@@ -138,12 +137,6 @@ var BBC = BBC || {};
 
             }, this);
 
-            // Create the submit button and add to the form:
-            if (this.options.submitText) {
-                var submit = _.template($('#form-submit-template').html(), {text : this.options.submitText}, {variable : 'config'});
-                this.$el.append(submit);
-            }
-
             return this;
         },
 
@@ -193,7 +186,6 @@ var BBC = BBC || {};
             // TODO :: ALLOW PROGRAMMER TO OVER-RIDE THE TEMPLATE IF NECESSARY...
             // Get the template by concatting the type with ... what I know is in the HTML templates.
             options.type = options.type ? options.type : this.type;
-//            this.template = _.template($('#' + formSuffix + options.type +'-template').html(), null, {variable : 'config'});
             var templateSelector = '#' + formSuffix + options.type +'-template';
             this.applyTemplate(templateSelector);
         },
@@ -288,12 +280,12 @@ var BBC = BBC || {};
      * Submit button sub-view does almost nothing... almost!
      * @type {*|void|extend|extend|extend|extend}
      */
-    BBC.FormView_submit = BBC.BaseView.extend({
-//        type :
-        initialize : function (options) {
-            this.applyTemplate('#form-submit-template');
-            return this;
-        },
+    BBC.FormView_submit = BBC.FormView_BasicInput.extend({
+        type : 'submit',
+//        initialize : function (options) {
+//            this.applyTemplate('#form-submit-template');
+//            return this;
+//        },
 
         events : {
             'click input' : 'save'
