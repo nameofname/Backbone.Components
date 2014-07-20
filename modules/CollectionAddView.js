@@ -25,15 +25,13 @@
         },
 
         initialize : function (options) {
-
             if (!options.collection || options.collection === 'undefined') {
                 throw new Error('The "collection" option is required to use the CollectionAddView.');
             }
 
             _.defaults(options, this.defaults);
             this.options = options;
-
-            this.template = _.template($('#collection-add-template').html(), null, {varaible : 'data'});
+            this.applyTemplate('#collection-add-template');
 
             return this;
         },
@@ -50,14 +48,38 @@
             } else {
 
                 // In this case - init an empty model so we can start out with at least 1 view :
-                this.collection.add({});
-                this.addNewSub(this.collection.at(0));
+                var newModel = this._newModel();
+                this.addNewSub(newModel);
             }
             return this;
         },
 
         events : {
-            'click .collection-add-new' : 'addNewSub'
+            'click .collection-add-new' : 'clickAddNewSub',
+            'click .collection-remove' : 'removeSub'
+        },
+
+        /**
+         * Private helper to add a new model to the collection.
+         * @returns {Model}
+         * @private
+         */
+        _newModel : function() {
+            var Model = this.collection.model;
+            var newModel = new Model({});
+            this.collection.add(newModel);
+            return newModel;
+        },
+
+
+        /**
+         * Event handler for user clicking button to add a new sub-view. Creates a model to pass to this.addNewSub.
+         * @returns {*}
+         */
+        clickAddNewSub : function (e) {
+            this.killE(e);
+            var newModel = this._newModel();
+            return this.addNewSub(newModel);
         },
 
         /**
@@ -79,7 +101,7 @@
                 this.options.collection.push(model);
                 newModel = model;
             } else {
-                newModel = this.options.collection.create({});
+                newModel = this.options.collection.add({});
             }
 
             // first make sure the collection is initialized on the parent model:
@@ -93,13 +115,26 @@
                 model : newModel
             });
 
-            var sub = this.subViews.add(this.options.subView, subViewOptions).render();
+            // Each row gets the child view the programmer specified, and a delete icon, wrapped in a generic base view
+            var sub = this.subViews.add(_rowContainerView).render();
+            var child1 = sub.subViews.add(this.options.subView, subViewOptions).render();
+            var child2 = sub.subViews.add(_deleteView).render();
+            sub.$('.span11').append(child1.$el);
+            sub.$('.span1').append(child2.$el);
+
             this.$('.sub-container').append(sub.$el);
 
             // If the sub view limit has been reached, then disable the add new button :
             if (this._reachedLimit()) {
                 $('.collection-add-new').disable();
             }
+        },
+
+        /**
+         * When you click the delete icon next to a given sub-view, remove it from the view + collection.
+         */
+        removeSub : function () {
+            // get the sub-view that is in the same container (can get by sub grouping...)
         },
 
         /**
@@ -115,6 +150,48 @@
             return false;
         }
 
+    });
+
+    /**
+     * Private helper view to contain the sub-views of each row.
+     * @type {*|void|extend|extend|extend|extend}
+     * @private
+     */
+    var _rowContainerView = BBC.BaseView.extend({
+        initialize : function () {
+            this.applyTemplate('#collection-add-row-container');
+            return this;
+        }
+    });
+
+    /**
+     * The delete button for each sub-view.
+     * @type {*|void|extend|extend|extend|extend}
+     * @private
+     */
+    var _deleteView = BBC.BaseView.extend({
+//        className : 'pull-left',
+        initialize : function () {
+            this.applyTemplate('#collection-add-delete-icon');
+            return this;
+        },
+
+        events : {
+            'click' : function () {
+                var self;
+                var viewToKill;
+
+                this.parentView.subViews.each(function (view) {
+                    debugger;
+                    // i should try to retreive the sub-view that is not the current one.
+                    if (self !== view) {
+                        viewToKill = view;
+                    }
+                });
+
+                this.publish('collectionAdd:remove', viewToKill);
+            }
+        }
     });
 
 })();

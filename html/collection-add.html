@@ -1,10 +1,25 @@
 <!-- BBC.CollectionAddView template: -->
-<script type="text/template" xmlns="http://www.w3.org/1999/html" id="collection-add-template" enctype="multipart/form-data">
+<script type="text/template" id="collection-add-template" data-varName="config">
     <div class="row">
-        <div class="span12 sub-container">
-        </div>
+        <label><%= config.label %></label>
+        <div class="span12 sub-container"></div>
+    </div>
+    <div class="row">
         <div class="span12">
             <button class="collection-add-new btn btn-link"><i class="fa fa-plus"></i> Add New</button>
         </div>
+    </div>
+</script>
+
+<!-- Delete icon for each sub-view of the template : -->
+<script type="text/template" id="collection-add-delete-icon">
+        <i class="fa fa-trash-o pull-right"></i>
+</script>
+
+<!-- Basic row container for each sub that gets added to the collection add view: -->
+<script type="text/template" id="collection-add-row-container">
+    <div class="row">
+        <div class="span1"></div>
+        <div class="span11"></div>
     </div>
 </script>

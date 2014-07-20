@@ -1,0 +1,54 @@
+<!-- Form input: -->
+<script type="text/template" id="form-input-template">
+    <div>
+        <label><%= config.label %></label>
+    </div>
+    <div>
+        <input type="text" name="<%= config.attribute %>" placeholder="<%= config.currentValue %>"
+               value="<%= config.currentValue ? config.currentValue : '' %>">
+    </div>
+</script>
+
+<!-- Form textarea: -->
+<script type="text/template" id="form-textarea-template">
+    <div>
+        <label><%= config.label %></label>
+    </div>
+    <div>
+        <textarea name="<%= config.attribute %>" placeholder="<%= config.currentValue %>"><%= config.currentValue %></textarea>
+    </div>
+</script>
+
+<!-- Form password: -->
+<script type="text/template" id="form-password-template">
+    <div>
+        <label><%= config.label %></label>
+    </div>
+    <div>
+        <input type="password" name="<%= config.attribute %>" placeholder="<%= config.currentValue %>">
+    </div>
+</script>
+
+<!-- Form select: -->
+<script type="text/template" id="form-select-template">
+    <div>
+        <label><%= config.label %></label>
+    </div>
+    <div>
+        <select>
+            <% if (typeof config.placeholder === 'string') {%>
+            <option><%= config.placeholder %></option>
+            <% } %>
+            <% _.each(config.options, function (opt) { %>
+            <option value="<%= opt.value %>"><%= opt.name %></option>
+            <% }); %>
+        </select>
+    </div>
+</script>
+
+<!-- Form Submit Button: -->
+<script type="text/template" id="form-submit-template"data-varname="config">
+    <div class="controls">
+        <input class='btn submit' type='submit' name='<%= config.text %>' value='<%= config.text ? config.text : "Submit" %>' />
+    </div>
+</script>

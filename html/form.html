@@ -1,5 +1,5 @@
 <!-- Form input: -->
-<script type="text/template" xmlns="http://www.w3.org/1999/html" id="form-input-template" enctype="multipart/form-data">
+<script type="text/template" id="form-control-input-template" data-varName="config">
     <label class="control-label"><%= config.label %></label>
     <div class="controls">
         <input type="text" name="<%= config.attribute %>" placeholder="<%= config.currentValue %>"
@@ -8,7 +8,7 @@
 </script>
 
 <!-- Form textarea: -->
-<script type="text/template" xmlns="http://www.w3.org/1999/html" id="form-textarea-template" enctype="multipart/form-data">
+<script type="text/template" id="form-control-textarea-template" data-varName="config">
     <label class="control-label"><%= config.label %></label>
     <div class="controls">
         <textarea name="<%= config.attribute %>" placeholder="<%= config.currentValue %>"><%= config.currentValue %></textarea>
@@ -16,7 +16,7 @@
 </script>
 
 <!-- Form password: -->
-<script type="text/template" xmlns="http://www.w3.org/1999/html" id="form-password-template" enctype="multipart/form-data">
+<script type="text/template" id="form-control-password-template" data-varName="config">
     <label class="control-label"><%= config.label %></label>
     <div class="controls">
         <input type="password" name="<%= config.attribute %>" placeholder="<%= config.currentValue %>">
@@ -24,7 +24,7 @@
 </script>
 
 <!-- Form select: -->
-<script type="text/template" xmlns="http://www.w3.org/1999/html" id="form-select-template" enctype="multipart/form-data">
+<script type="text/template" id="form-control-select-template" data-varName="config">
     <label class="control-label"><%= config.label %></label>
     <div class="controls">
         <select>
@@ -39,8 +39,65 @@
 </script>
 
 <!-- Form Submit Button: -->
-    <script type="text/template" xmlns="http://www.w3.org/1999/html" id="form-submit-template" enctype="multipart/form-data">
+    <script type="text/template" id="form-control-submit-template" data-varName="config">
     <div class="controls">
         <input class='btn submit' type='submit' name='<%= data.text %>' value='<%= data.text ? data.text : "Submit" %>' />
+    </div>
+</script>
+
+
+<!-- START NON-CONTROL STYLE TEMPLATES ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
+<!-- Form input: -->
+<script type="text/template" id="form-input-template" data-varName="config">
+    <div>
+        <label><%= config.label %></label>
+    </div>
+    <div>
+        <input type="text" name="<%= config.attribute %>" placeholder="<%= config.currentValue %>"
+               value="<%= config.currentValue ? config.currentValue : '' %>">
+    </div>
+</script>
+
+<!-- Form textarea: -->
+<script type="text/template" id="form-textarea-template" data-varName="config">
+    <div>
+        <label><%= config.label %></label>
+    </div>
+    <div>
+        <textarea name="<%= config.attribute %>" placeholder="<%= config.currentValue %>"><%= config.currentValue %></textarea>
+    </div>
+</script>
+
+<!-- Form password: -->
+<script type="text/template" id="form-password-template" data-varName="config">
+    <div>
+        <label><%= config.label %></label>
+    </div>
+    <div>
+        <input type="password" name="<%= config.attribute %>" placeholder="<%= config.currentValue %>">
+    </div>
+</script>
+
+<!-- Form select: -->
+<script type="text/template" id="form-select-template" data-varName="config">
+    <div>
+        <label><%= config.label %></label>
+    </div>
+    <div>
+        <select>
+            <% if (typeof config.placeholder === 'string') {%>
+            <option><%= config.placeholder %></option>
+            <% } %>
+            <% _.each(config.options, function (opt) { %>
+            <option value="<%= opt.value %>"><%= opt.name %></option>
+            <% }); %>
+        </select>
+    </div>
+</script>
+
+<!-- Form Submit Button: -->
+<script type="text/template" id="form-submit-template" data-varname="config" data-varName="config">
+    <div class="controls">
+        <input class='btn submit' type='submit' name='<%= config.text %>' value='<%= config.text ? config.text : "Submit" %>' />
     </div>
 </script>

@@ -112,7 +112,8 @@ var BBC = BBC || {};
                 // Default the autoSetFields attribute of the config to true. Model is this.model
                 config = _.defaults(config, {
                     model : this.model,
-                    autoSetFields : true
+                    autoSetFields : true,
+                    control : this.options.control ? this.options.control : false
                 });
 
                 // Get the currentValue to display in the form field:
@@ -161,11 +162,11 @@ var BBC = BBC || {};
 
     /**
      * Input, textarea and password form fields use the same view.
+     * Auto-magically determines the template to use based on the passed "type" option.
      * @type {*}
      */
     BBC.FormView_BasicInput = BBC.BaseView.extend({
 
-        className : 'control-group',
         type : null, // Views that extend FormView_BasicInput MUST declare a type. ie. 'text' or 'select'
 
         events : {
@@ -173,15 +174,28 @@ var BBC = BBC || {};
         },
 
         initialize : function(options) {
+            var formSuffix = 'form-';
             this.config = options;
 
             this.config = _.defaults(this.config, {
                 autoSetFields : true
             });
 
-            // Get the template by concatting the type with ... what I know is in tege HTML templates.
+            // If the optional control attribute is set to true, then use form control style templates :
+            if (this.options.control === true) {
+                this.$el.addClass('control-group');
+                formSuffix = 'form-control-';
+            } else {
+                this.$el.addClass('row');
+                formSuffix = 'form-';
+            }
+
+            // TODO :: ALLOW PROGRAMMER TO OVER-RIDE THE TEMPLATE IF NECESSARY...
+            // Get the template by concatting the type with ... what I know is in the HTML templates.
             options.type = options.type ? options.type : this.type;
-                this.template = _.template($('#form-'+ options.type +'-template').html(), null, {variable : 'config'});
+//            this.template = _.template($('#' + formSuffix + options.type +'-template').html(), null, {variable : 'config'});
+            var templateSelector = '#' + formSuffix + options.type +'-template';
+            this.applyTemplate(templateSelector);
         },
 
         render : function() {
@@ -241,34 +255,33 @@ var BBC = BBC || {};
      */
     BBC.FormView_select = BBC.FormView_BasicInput.extend({
 
-        className : 'control-group',
-        type : 'select',
+        type : 'select'
 
-        initialize : function(options) {
-
-            // re-name options to config ... because options.optins is confusing.
-            this.config = options;
-
-            // Get the template by concatting the type with ... what I know is in tege HTML templates.
-            this.template = _.template($('#form-'+ options.type +'-template').html(), null, {variable : 'config'});
-        },
-
-        render : function() {
-            var obj = _.clone(this.config);
-            if (typeof this.config.options === 'function') {
-                obj.options = this.config.options();
-            }
-            this.$el.html(this.template(obj));
-            return this;
-        },
-
-        events : {
-            'click' : 'save'
-        },
-
-        save : function () {
-            this.publish('formView:save');
-        }
+//        initialize : function(options) {
+//
+//            // re-name options to config ... because options.optins is confusing.
+//            this.config = options;
+//
+//            // Get the template by concatting the type with ... what I know is in tege HTML templates.
+//            this.template = _.template($('#form-'+ options.type +'-template').html(), null, {variable : 'config'});
+//        },
+//
+//        render : function() {
+//            var obj = _.clone(this.config);
+//            if (typeof this.config.options === 'function') {
+//                obj.options = this.config.options();
+//            }
+//            this.$el.html(this.template(obj));
+//            return this;
+//        },
+//
+//        events : {
+//            'click' : 'save'
+//        },
+//
+//        save : function () {
+//            this.publish('formView:save');
+//        }
     });
 
     /**
@@ -276,6 +289,7 @@ var BBC = BBC || {};
      * @type {*|void|extend|extend|extend|extend}
      */
     BBC.FormView_submit = BBC.BaseView.extend({
+//        type :
         initialize : function (options) {
             this.applyTemplate('#form-submit-template');
             return this;

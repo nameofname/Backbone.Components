@@ -220,12 +220,14 @@ var BBC = BBC || {};
         },
 
         /**
-         * You will likely ver-ride this basic render function in many cases
+         * You will likely over-ride this basic render function in many cases
          */
         render: function () {
             if (typeof this.template === 'function' && this.model instanceof Backbone.Model) {
                 this.$el.html(this.template(this.model.toJSON));
-                }
+            } else if (typeof this.template === 'function' && this.model === undefined) {
+                this.$el.html(this.template());
+            }
             return this;
         },
 
@@ -349,15 +351,21 @@ var BBC = BBC || {};
          *
          * Note*** If you want a variable name to be applied to your template and you are using templateId, then add
          * the attribute "data-varName" to your template.
+         *      - defauls to "data"
          */
-        applyTemplate : function (selector) {
+            applyTemplate : function (selector) {
             var temp;
             if (this.options.template && typeof this.options.template === 'function') {
                 temp = this.options.template;
             } else if (this.options.templateId && typeof this.options.templateId === 'string') {
                 temp = _.template($('#' + this.options.templateId).html(), null, {variable : 'data'})
             } else if (selector && typeof selector === 'string') {
-                temp = _.template($(selector).html(), null, {variable : 'data'})
+                // Use variable name applied to template, or default to "data"
+                var varName = 'data';
+                if ($(selector).data('varname')) {
+                    varName = $(selector).data('varname');
+                }
+                temp = _.template($(selector).html(), null, {variable : varName})
             }
 
             if (typeof temp !== 'undefined') {
