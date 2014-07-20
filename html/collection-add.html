@@ -1,12 +1,12 @@
 <!-- BBC.CollectionAddView template: -->
 <script type="text/template" id="collection-add-template" data-varName="config">
     <div class="row">
-        <label><%= config.label %></label>
+        <label><strong><%= config.label %></strong></label>
         <div class="span12 sub-container"></div>
     </div>
     <div class="row">
         <div class="span12">
-            <button class="collection-add-new btn btn-link"><i class="fa fa-plus"></i> Add New</button>
+            <a href='#' class="collection-add-new"><%= config.addText ? config.addText : 'Add New' %> <i class="fa fa-plus"></i></a>
         </div>
     </div>
 </script>
@@ -20,6 +20,9 @@
 <script type="text/template" id="collection-add-row-container">
     <div class="row">
         <div class="span1"></div>
-        <div class="span11"></div>
+        <div class="span11">
+            <div class="input pull-left"></div>
+            <div class="trash pull-left"></div>
+        </div>
     </div>
 </script>

@@ -89,6 +89,7 @@ var BBC = BBC || {};
         this.List[key] = view;
         this.lastKey = key;
 
+        this.length++;
         return view;
     };
 
@@ -113,6 +114,7 @@ var BBC = BBC || {};
                 delete self.List[key];
             }
         });
+        this.length--;
     };
 
     /**
@@ -120,6 +122,7 @@ var BBC = BBC || {};
      */
     SubViews.prototype.empty = function () {
         this.List = {};
+        this.length = 0;
     };
 
     /**
@@ -195,6 +198,12 @@ var BBC = BBC || {};
             return false;
         }
     };
+
+    /**
+     * The length of the subview list
+     * @type {number}
+     */
+    SubViews.prototype.length = 0;
 
     /**
      * === === === === === === === === === === === === === === === === === === === === === === === === === === === ===

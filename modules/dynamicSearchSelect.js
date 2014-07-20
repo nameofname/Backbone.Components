@@ -28,7 +28,7 @@ var BBC = BBC || {};
      */
     BBC.dynamicSearchSelect = BBC.BaseView.extend({
         tagName : 'div',
-        className : 'dynamic-search',
+        className : 'dynamic-search ',
 
         // Cached jQuery objects:
         $chosenInput : null,

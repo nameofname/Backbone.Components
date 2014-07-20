@@ -1,6 +1,6 @@
 <!-- Form input - control style : -->
 <script type="text/template" id="form-control-input-template" data-varName="config">
-    <label class="control-label"><%= config.label %></label>
+    <label class="control-label"><strong><%= config.label %></strong></label>
     <div class="controls">
         <input type="text" name="<%= config.attribute %>" placeholder="<%= config.currentValue %>"
                value="<%= config.currentValue ? config.currentValue : '' %>">
@@ -9,7 +9,7 @@
 
 <!-- Form textarea - control style : -->
 <script type="text/template" id="form-control-textarea-template" data-varName="config">
-    <label class="control-label"><%= config.label %></label>
+    <label class="control-label"><strong><%= config.label %></strong></label>
     <div class="controls">
         <textarea name="<%= config.attribute %>" placeholder="<%= config.currentValue %>"><%= config.currentValue %></textarea>
     </div>
@@ -17,7 +17,7 @@
 
 <!-- Form password - control style : -->
 <script type="text/template" id="form-control-password-template" data-varName="config">
-    <label class="control-label"><%= config.label %></label>
+    <label class="control-label"><strong><%= config.label %></strong></label>
     <div class="controls">
         <input type="password" name="<%= config.attribute %>" placeholder="<%= config.currentValue %>">
     </div>
@@ -25,7 +25,7 @@
 
 <!-- Form select - control style : -->
 <script type="text/template" id="form-control-select-template" data-varName="config">
-    <label class="control-label"><%= config.label %></label>
+    <label class="control-label"><strong><%= config.label %></strong></label>
     <div class="controls">
         <select>
             <% if (typeof config.placeholder === 'string') {%>
@@ -50,38 +50,41 @@
 <!-- Form input: -->
 <script type="text/template" id="form-input-template" data-varName="config">
     <div>
-        <label><%= config.label %></label>
+        <label><strong><%= config.label %></strong></label>
     </div>
     <div>
         <input type="text" name="<%= config.attribute %>" placeholder="<%= config.currentValue %>"
                value="<%= config.currentValue ? config.currentValue : '' %>">
     </div>
+    <br />
 </script>
 
 <!-- Form textarea: -->
 <script type="text/template" id="form-textarea-template" data-varName="config">
     <div>
-        <label><%= config.label %></label>
+        <label><strong><%= config.label %></strong></label>
     </div>
     <div>
         <textarea name="<%= config.attribute %>" placeholder="<%= config.currentValue %>"><%= config.currentValue %></textarea>
     </div>
+    <br />
 </script>
 
 <!-- Form password: -->
 <script type="text/template" id="form-password-template" data-varName="config">
     <div>
-        <label><%= config.label %></label>
-    </div>
+        <label><strong><%= config.label %></strong></label>
+    </div>a
     <div>
         <input type="password" name="<%= config.attribute %>" placeholder="<%= config.currentValue %>">
     </div>
+    <br />
 </script>
 
 <!-- Form select: -->
 <script type="text/template" id="form-select-template" data-varName="config">
     <div>
-        <label><%= config.label %></label>
+        <label><strong><%= config.label %></strong></label>
     </div>
     <div>
         <select>
@@ -93,6 +96,7 @@
             <% }); %>
         </select>
     </div>
+    <br />
 </script>
 
 <!-- Form Submit Button: -->

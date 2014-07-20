@@ -19,6 +19,8 @@
      */
     BBC.CollectionAddView = BBC.BaseView.extend({
 
+//        className : 'row',
+
         defaults : {
             limit : null,
             subView : BBC.BaseView
@@ -117,10 +119,15 @@
 
             // Each row gets the child view the programmer specified, and a delete icon, wrapped in a generic base view
             var sub = this.subViews.add(_rowContainerView).render();
+
             var child1 = sub.subViews.add(this.options.subView, subViewOptions).render();
-            var child2 = sub.subViews.add(_deleteView).render();
-            sub.$('.span11').append(child1.$el);
-            sub.$('.span1').append(child2.$el);
+            sub.$('.input').append(child1.$el);
+
+//            debugger;
+            if (this.subViews.length > 1) {
+                var child2 = sub.subViews.add(_deleteView).render();
+                sub.$('.trash').append(child2.$el);
+            }
 
             this.$('.sub-container').append(sub.$el);
 
