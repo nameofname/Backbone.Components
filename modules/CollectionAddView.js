@@ -19,8 +19,6 @@
      */
     BBC.CollectionAddView = BBC.BaseView.extend({
 
-//        className : 'row',
-
         defaults : {
             limit : null,
             subView : BBC.BaseView
@@ -34,6 +32,11 @@
             _.defaults(options, this.defaults);
             this.options = options;
             this.applyTemplate('#collection-add-template');
+
+            // Bind to the collectionAdd:remove event triggered by the delete view (the trash icon)
+            this.on('collectionAdd:remove', function (view) {
+                this.removeSub(view);
+            });
 
             return this;
         },
@@ -57,8 +60,7 @@
         },
 
         events : {
-            'click .collection-add-new' : 'clickAddNewSub',
-            'click .collection-remove' : 'removeSub'
+            'click .collection-add-new' : 'clickAddNewSub'
         },
 
         /**
@@ -123,7 +125,7 @@
             var child1 = sub.subViews.add(this.options.subView, subViewOptions).render();
             sub.$('.input').append(child1.$el);
 
-//            debugger;
+            // only apply the trash icon to sub-views other than the first one.
             if (this.subViews.length > 1) {
                 var child2 = sub.subViews.add(_deleteView).render();
                 sub.$('.trash').append(child2.$el);
@@ -140,8 +142,9 @@
         /**
          * When you click the delete icon next to a given sub-view, remove it from the view + collection.
          */
-        removeSub : function () {
-            // get the sub-view that is in the same container (can get by sub grouping...)
+        removeSub : function (view) {
+            // TODO ::: also remove the associated model from the collection.
+            this.subViews.remove(view);
         },
 
         /**
@@ -150,7 +153,7 @@
          * @private
          */
         _reachedLimit : function () {
-            var len = _.size(this.subViews.List);
+            var len = this.subViews.length;
             if (this.options.limit && len >= this.options.limit) {
                 return true;
             }
@@ -177,7 +180,7 @@
      * @private
      */
     var _deleteView = BBC.BaseView.extend({
-//        className : 'pull-left',
+
         initialize : function () {
             this.applyTemplate('#collection-add-delete-icon');
             return this;
@@ -185,18 +188,7 @@
 
         events : {
             'click' : function () {
-                var self;
-                var viewToKill;
-
-                this.parentView.subViews.each(function (view) {
-                    debugger;
-                    // i should try to retreive the sub-view that is not the current one.
-                    if (self !== view) {
-                        viewToKill = view;
-                    }
-                });
-
-                this.publish('collectionAdd:remove', viewToKill);
+                this.publish('collectionAdd:remove', this.parentView);
             }
         }
     });

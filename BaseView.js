@@ -114,6 +114,7 @@ var BBC = BBC || {};
                 delete self.List[key];
             }
         });
+        view.remove();
         this.length--;
     };
 
@@ -150,7 +151,6 @@ var BBC = BBC || {};
      * @param context - the context of the callback function - used if you want to invoke methods from whatever
      *      context you are currently in at the time of calling the callback.
      */
-    // TODO : TEST THIS FUNCTION WHEN I HAVE A REAL USE CASE!!!!!!!!!!!!!
     SubViews.prototype.each = function (callback, args, context) {
 
         // Callback has to be a function:
@@ -251,13 +251,6 @@ var BBC = BBC || {};
          */
         publish : function () {
             var t = this.topView();
-            var args = Array.prototype.slice.call(arguments);
-
-            // Add the view to the beginning of the array :
-            var eventName = args.shift();
-            args.unshift(this);
-            args.unshift(eventName);
-
             t._publish.apply(t, arguments);
         },
 
