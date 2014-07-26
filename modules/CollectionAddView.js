@@ -123,15 +123,15 @@
             var sub = this.subViews.add(_rowContainerView).render();
 
             var child1 = sub.subViews.add(this.options.subView, subViewOptions).render();
-            sub.$('.input').append(child1.$el);
+            sub.$('.col-add-input').append(child1.$el);
 
             // only apply the trash icon to sub-views other than the first one.
             if (this.subViews.length > 1) {
                 var child2 = sub.subViews.add(_deleteView).render();
-                sub.$('.trash').append(child2.$el);
+                sub.$('.col-add-trash').append(child2.$el);
             }
 
-            this.$('.sub-container').append(sub.$el);
+            this.$('.col-add-sub-container').append(sub.$el);
 
             // If the sub view limit has been reached, then disable the add new button :
             if (this._reachedLimit()) {

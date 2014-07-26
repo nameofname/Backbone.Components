@@ -1,8 +1,10 @@
 <!-- BBC.CollectionAddView template: -->
 <script type="text/template" id="collection-add-template" data-varName="config">
     <div class="row">
-        <label><strong><%= config.label %></strong></label>
-        <div class="span12 sub-container"></div>
+        <div class="span12">
+            <label><strong><%= config.label %></strong></label>
+            <div class="col-add-sub-container"></div>
+        </div>
     </div>
     <div class="row">
         <div class="span12">
@@ -13,16 +15,16 @@
 
 <!-- Delete icon for each sub-view of the template : -->
 <script type="text/template" id="collection-add-delete-icon">
-        <i class="fa fa-trash-o pull-right"></i>
+    <i class="fa fa-trash-o pull-right"></i>
 </script>
 
 <!-- Basic row container for each sub that gets added to the collection add view: -->
 <script type="text/template" id="collection-add-row-container">
     <div class="row">
-        <div class="span1"></div>
-        <div class="span11">
-            <div class="input pull-left"></div>
-            <div class="trash pull-left"></div>
+        <!--<div class="span1"></div>-->
+        <div class="span12">
+            <div class="col-add-input pull-left"></div>
+            <div class="col-add-trash pull-left"></div>
         </div>
     </div>
 </script>

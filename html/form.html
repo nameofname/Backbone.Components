@@ -49,57 +49,67 @@
 <!-- START NON-CONTROL STYLE TEMPLATES ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
 <!-- Form input: -->
 <script type="text/template" id="form-input-template" data-varName="config">
-    <div>
-        <label><strong><%= config.label %></strong></label>
+    <div class="span12">
+        <div>
+            <label><strong><%= config.label %></strong></label>
+        </div>
+        <div>
+            <input type="text" name="<%= config.attribute %>" placeholder="<%= config.currentValue %>"
+                   value="<%= config.currentValue ? config.currentValue : '' %>">
+        </div>
+        <br />
     </div>
-    <div>
-        <input type="text" name="<%= config.attribute %>" placeholder="<%= config.currentValue %>"
-               value="<%= config.currentValue ? config.currentValue : '' %>">
-    </div>
-    <br />
 </script>
 
 <!-- Form textarea: -->
 <script type="text/template" id="form-textarea-template" data-varName="config">
-    <div>
-        <label><strong><%= config.label %></strong></label>
+    <div class="span12">
+        <div>
+            <label><strong><%= config.label %> BURP!</strong></label>
+        </div>
+        <div>
+            <textarea name="<%= config.attribute %>" placeholder="<%= config.currentValue %>"><%= config.currentValue %></textarea>
+        </div>
+        <br />
     </div>
-    <div>
-        <textarea name="<%= config.attribute %>" placeholder="<%= config.currentValue %>"><%= config.currentValue %></textarea>
-    </div>
-    <br />
 </script>
 
 <!-- Form password: -->
 <script type="text/template" id="form-password-template" data-varName="config">
-    <div>
-        <label><strong><%= config.label %></strong></label>
-    </div>a
-    <div>
-        <input type="password" name="<%= config.attribute %>" placeholder="<%= config.currentValue %>">
+    <div class="span12">
+        <div>
+            <label><strong><%= config.label %></strong></label>
+        </div>
+        <div>
+            <input type="password" name="<%= config.attribute %>" placeholder="<%= config.currentValue %>">
+        </div>
+        <br />
     </div>
-    <br />
 </script>
 
 <!-- Form select: -->
 <script type="text/template" id="form-select-template" data-varName="config">
-    <div>
-        <label><strong><%= config.label %></strong></label>
+    <div class="span12">
+        <div>
+            <label><strong><%= config.label %></strong></label>
+        </div>
+        <div>
+            <select>
+                <% if (typeof config.placeholder === 'string') {%>
+                <option><%= config.placeholder %></option>
+                <% } %>
+                <% _.each(config.options, function (opt) { %>
+                <option value="<%= opt.value %>"><%= opt.name %></option>
+                <% }); %>
+            </select>
+        </div>
+        <br />
     </div>
-    <div>
-        <select>
-            <% if (typeof config.placeholder === 'string') {%>
-            <option><%= config.placeholder %></option>
-            <% } %>
-            <% _.each(config.options, function (opt) { %>
-            <option value="<%= opt.value %>"><%= opt.name %></option>
-            <% }); %>
-        </select>
-    </div>
-    <br />
 </script>
 
 <!-- Form Submit Button: -->
 <script type="text/template" id="form-submit-template" data-varname="config" data-varName="config">
-    <input class='btn submit' type='submit' name='<%= config.text %>' value='<%= config.text ? config.text : "Submit" %>' />
+    <div class="span12">
+        <input class='btn submit' type='submit' name='<%= config.text %>' value='<%= config.text ? config.text : "Submit" %>' />
+    </div>
 </script>
