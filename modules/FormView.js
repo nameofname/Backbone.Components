@@ -156,6 +156,9 @@ var BBC = BBC || {};
     /**
      * Input, textarea and password form fields use the same view.
      * Auto-magically determines the template to use based on the passed "type" option.
+     *      Options :
+     *      - template <function>
+     *      - templateSelector <string>
      * @type {*}
      */
     BBC.FormView_BasicInput = BBC.BaseView.extend({
@@ -183,11 +186,18 @@ var BBC = BBC || {};
                 formSuffix = 'form-';
             }
 
-            // TODO :: ALLOW PROGRAMMER TO OVER-RIDE THE TEMPLATE IF NECESSARY...
             // Get the template by concatting the type with ... what I know is in the HTML templates.
+            // If the template (function) is passed, then use that, AND if a "templateSelector" is passed, then
+            // use that :
             options.type = options.type ? options.type : this.type;
-            var templateSelector = '#' + formSuffix + options.type +'-template';
-            this.applyTemplate(templateSelector);
+            if (!this.options.template && typeof options.type === 'string') {
+                var templateSelector = '#' + formSuffix + options.type +'-template';
+                this.applyTemplate(templateSelector);
+            } else if (this.options.template) {
+                this.template = this.options.template;
+            } else if (this.options.templateSelector) {
+                this.applyTemplate(this.options.templateSelector);
+            }
         },
 
         render : function() {
