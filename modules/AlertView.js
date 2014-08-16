@@ -79,6 +79,7 @@ var BBC = BBC || {};
          */
         closeAlert : function(e, callback, callbackOptions) {
             var self = this;
+            callbackOptions = callbackOptions || {};
             self.$el.fadeOut(function () {
                 self.$el.remove();
                 // If a callback was included, then invoke it now:
