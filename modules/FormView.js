@@ -87,13 +87,9 @@ var BBC = BBC || {};
 
                 }
 
-                // If a valid attribute was not passed, also throw an error.
-                if (!field.attribute || typeof field.attribute !== 'string') {
-
-                    // Unless it's the submit button ...
-                    if (field.type !== 'submit') {
-                        throw new Error('A valid attribute name must be provided for form view sub-views.');
-                    }
+                // If a valid attribute was not passed, AND this is not the submit button, then throw an error.
+                if ((!field.attribute || typeof field.attribute !== 'string') && field.type !== 'submit') {
+                    throw new Error('A valid attribute name must be provided for form view sub-views.');
                 }
 
                 // If the type is one of the pre-defined aliases, then use the coresponding pre-defined view :
@@ -108,12 +104,18 @@ var BBC = BBC || {};
                 }
 
                 config = _.clone(field);
+
                 // Default the autoSetFields attribute of the config to true. Model is this.model
                 config = _.defaults(config, {
                     model : this.model,
                     autoSetFields : true,
                     control : this.options.control ? this.options.control : false
                 });
+
+                if (field.viewOptions) {
+                    _.defaults(config, field.viewOptions);
+                    delete config.viewOptions;
+                }
 
                 // Get the currentValue to display in the form field:
                 config.currentValue = this.model.get(field.attribute);
@@ -171,9 +173,8 @@ var BBC = BBC || {};
 
         initialize : function(options) {
             var formSuffix = 'form-';
-            this.config = options;
 
-            this.config = _.defaults(this.config, {
+            this.options = _.defaults(this.options, {
                 autoSetFields : true
             });
 
@@ -201,7 +202,7 @@ var BBC = BBC || {};
         },
 
         render : function() {
-            this.$el.html(this.template(this.config));
+            this.$el.html(this.template(this.options));
             return this;
         },
 
@@ -249,41 +250,8 @@ var BBC = BBC || {};
     BBC.FormView_password = BBC.FormView_BasicInput.extend({
         type : 'password'
     });
-
-    /**
-     * The select view also inherits from the BBC.FormView_BasicInput function, however, it has to do the extra work
-     * of adding options to the select.
-     * @type {*}
-     */
     BBC.FormView_select = BBC.FormView_BasicInput.extend({
-
         type : 'select'
-
-//        initialize : function(options) {
-//
-//            // re-name options to config ... because options.optins is confusing.
-//            this.config = options;
-//
-//            // Get the template by concatting the type with ... what I know is in tege HTML templates.
-//            this.template = _.template($('#form-'+ options.type +'-template').html(), null, {variable : 'config'});
-//        },
-//
-//        render : function() {
-//            var obj = _.clone(this.config);
-//            if (typeof this.config.options === 'function') {
-//                obj.options = this.config.options();
-//            }
-//            this.$el.html(this.template(obj));
-//            return this;
-//        },
-//
-//        events : {
-//            'click' : 'save'
-//        },
-//
-//        save : function () {
-//            this.publish('formView:save');
-//        }
     });
 
     /**
@@ -292,10 +260,6 @@ var BBC = BBC || {};
      */
     BBC.FormView_submit = BBC.FormView_BasicInput.extend({
         type : 'submit',
-//        initialize : function (options) {
-//            this.applyTemplate('#form-submit-template');
-//            return this;
-//        },
 
         events : {
             'click input' : 'save'
@@ -327,6 +291,5 @@ var BBC = BBC || {};
             }
         }
     }
-
 
 })();
