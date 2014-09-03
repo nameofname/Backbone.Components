@@ -25,7 +25,18 @@
         },
 
         initialize : function (options) {
-            if (!options.collection || options.collection === 'undefined') {
+
+            // If no collection was explicitly passed in the options, then attempt to retrieve it off of the model :
+            if (!options.collection && options.attribute) {
+                if (this.model && this.model.get(options.attribute) && this.model.get(options.attribute) instanceof Backbone.Collection) {
+                    this.collection = this.model.get(options.attribute);
+                }
+            } else if (options.collection) {
+                this.collection = options.collection;
+            }
+
+            // If the view was not able to retrieve a collection and one was not passed, then throw an error
+            if (!this.collection) {
                 throw new Error('The "collection" option is required to use the CollectionAddView.');
             }
 
@@ -92,6 +103,7 @@
          * @param model
          */
         addNewSub : function (model) {
+            // TODO --- RE-FACTOR THIS FUNCTION TO CREATE A NEW FORM VIEW WITH 1 FIELD FOR EACH NEW SUB!!!
             var newModel;
 
             // Do not add a new sub-view if the limit has been reached :
@@ -102,15 +114,15 @@
 
             // Use the model passed in OR create a new model based on the options :
             if (model instanceof Backbone.Model) {
-                this.options.collection.push(model);
+                this.collection.push(model);
                 newModel = model;
             } else {
-                newModel = this.options.collection.add({});
+                newModel = this.collection.add({});
             }
 
             // first make sure the collection is initialized on the parent model:
             if (typeof this.model.get(this.options.attribute) === 'undefined') {
-                this.model.set(this.options.attribute, this.options.collection)
+                this.model.set(this.options.attribute, this.collection)
             }
 
             var subViewOptions = this.options.subViewOptions ? this.options.subViewOptions : {};

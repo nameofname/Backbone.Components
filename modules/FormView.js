@@ -33,7 +33,7 @@ var BBC = BBC || {};
  *          - name <string> the displayed name of the option.
  *          - value <string> the value attribute of the option
  */
-(function(){
+(function () {
     "use strict";
 
     /**
@@ -54,12 +54,13 @@ var BBC = BBC || {};
             autoSetFields : true
         },
 
+        /**
+         * Initialize checks for fields options, and throws error if they do not exist -- also extends options
+         * with form view default options.
+         * @param options
+         */
         initialize : function(options){
-            if (typeof options.fields !== 'options.fields' && typeof this.fields !== 'undefined') {
-                this.fields = _.extend(this.fields, options.fields);
-            } else {
-                this.fields = this.fields ? this.fields : options.fields;
-            }
+            this.fields = this.fields ? this.fields : options.fields;
 
             if (typeof this.fields === 'undefined') {
                 throw new Error('Form view is useless without fields. Specify on the view as fields or pass as options.');
@@ -73,6 +74,14 @@ var BBC = BBC || {};
             'submit form' : 'triggerSubmitCallback'
         },
 
+        /**
+         * The magic of the form view mostly happens in the rendering. For each field configured, generate the
+         * corresponding form-input sub view.
+         * For each field, get the value of the model corresponding to the "attribute" field, and generate a new
+         * instance of the form input element passing along the correctly merged options, and form values (based on
+         * the model).
+         * @returns {FormView}
+         */
         render : function () {
 
             // Loop through the fields. If the field has a view property, then render that, and add to the subs.
@@ -116,9 +125,6 @@ var BBC = BBC || {};
                     _.defaults(config, field.viewOptions);
                     delete config.viewOptions;
                 }
-
-                // Get the currentValue to display in the form field:
-                config.currentValue = this.model.get(field.attribute);
 
                 // If validation rules were passed with this field, then add then to the view's validation object
                 if (field.required || field.validation_regex) {
@@ -201,7 +207,10 @@ var BBC = BBC || {};
             }
         },
 
-        render : function() {
+        render : function () {
+            // Get the currentValue to display in the form field:
+            this.options.currentValue = this.model.get(this.options.attribute);
+
             this.$el.html(this.template(this.options));
             return this;
         },
