@@ -21,8 +21,12 @@ var BBC = BBC || {};
      *      - placeholder - <str> placeholder text
      *      - parseCollection <function> -- parse method to apply to the anonymous collection that will be the
      *              results set.
-     *      - generateSearchParams - <function> -- function to generate a search object based on input value. Receivs
+     *      - generateSearchParams - <function> -- function to generate a search object based on input value. Receives
      *              the argument "value". Example : function (value) {return {query : value};}
+     *      - startingValue - <string | function> The current string value to display on the select when rendered. If
+     *              it's a function it will be executed in the context of the view instance.
+     *      - chosenOptions <object> any options you would normally pass to chosen method. Reference :
+     *              http://harvesthq.github.io/chosen/
      *
      * @type {*}
      */
@@ -67,8 +71,8 @@ var BBC = BBC || {};
 
         initialize : function(options) {
             // Create simple template:
-            this.templateTxt = '<select class="dynamic-search chzn-select"><option value=""></option></select>';
-            this.template = _.template(this.templateTxt, null, {variable : 'options'});
+            this.templateTxt = '<select class="dynamic-search chzn-select"><option value=""><%= obj.startingValue %></option></select>';
+            this.template = _.template(this.templateTxt, null, {variable : 'obj'});
 
             // Set up configurations via merge:
             this.config = _.defaults((options || {}), this.config);
@@ -87,15 +91,23 @@ var BBC = BBC || {};
                 return false;
             }
 
+            var startingValue;
+            if (typeof this.options.startingValue === 'function') {
+                startingValue = this.options.startingValue.apply(this);
+            } else {
+                startingValue = this.options.startingValue;
+            }
             // First, render the select, and set attributes for chosen to work with:
-            this.$el.append(this.template({}));
+            this.$el.append(this.template({
+                startingValue : startingValue
+            }));
             this.$('select').addClass(this.config.className).attr('data-placeholder', this.config.placeholder)
 
             // Append the created select to the DOM before initializing chosen select:
             self.config.target.append(self.el);
 
             // On chosen change, grab the passed data and trigger an event on this view.
-            self.$chosenSearch = self.$('select').chosen().change(function(e, data){
+            self.$chosenSearch = self.$('select').chosen(this.options.chosenOptions).change(function(e, data){
                 var selectedModel = self.searchCollection.get(data.selected);
                 self.publish('dynamic-change', e, data, selectedModel);
 
