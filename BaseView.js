@@ -298,7 +298,7 @@ var BBC = BBC || {};
         },
 
         /**
-         * To use modalize : create a property of your view which must have the following :
+         * To use modalize : create a "modalOptions" property of your view which must have the following :
          *      - subView
          * Optiaonally you can add :
          *      - subViewOptions

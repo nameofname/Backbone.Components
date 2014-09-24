@@ -228,9 +228,10 @@ var BBC = BBC || {};
          * @param e
          */
         updateModel : function(e) {
+//            var name = $(e.target).attr('name');
             var val = $(e.target).val();
-            var name = $(e.target).attr('name');
-            var type = $(e.target).attr('type');
+            var name = this.options.attribute;
+            var type = this.options.type;
             var obj = {};
 
             if (type !== 'submit') {
