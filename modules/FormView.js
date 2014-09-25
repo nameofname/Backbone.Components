@@ -156,6 +156,14 @@ var BBC = BBC || {};
             if (typeof this.options.submitCallback === 'function') {
                 this.options.submitCallback.apply(this, [e, this.model]);
             }
+        },
+
+        triggerUpdateModel : function () {
+            this.subViews.each(function (view) {
+                if (typeof view.updateModel === 'function') {
+                    view.updateModel();
+                }
+            });
         }
 
     });
@@ -228,8 +236,12 @@ var BBC = BBC || {};
          * @param e
          */
         updateModel : function(e) {
-//            var name = $(e.target).attr('name');
-            var val = $(e.target).val();
+            var val;
+            if (e) {
+                val = $(e.target).val();
+            } else {
+                val = this.$(this.type).val();
+            }
             var name = this.options.attribute;
             var type = this.options.type;
             var obj = {};
