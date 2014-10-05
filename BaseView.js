@@ -237,6 +237,7 @@ var BBC = BBC || {};
             } else if (typeof this.template === 'function' && this.model === undefined) {
                 this.$el.html(this.template());
             }
+            this.trigger('BaseView:render');
             return this;
         },
 
