@@ -233,7 +233,7 @@ var BBC = BBC || {};
          */
         render: function () {
             if (typeof this.template === 'function' && this.model instanceof Backbone.Model) {
-                this.$el.html(this.template(this.model.toJSON));
+                this.$el.html(this.template(this.model.toJSON()));
             } else if (typeof this.template === 'function' && this.model === undefined) {
                 this.$el.html(this.template());
             }
