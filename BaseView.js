@@ -299,33 +299,34 @@ var BBC = BBC || {};
         },
 
         /**
-         * To use modalize : create a "modalOptions" property of your view which must have the following :
+         * Adds a sub-view modal to the invoking view.
+         * Modal sub-view will be populated with a configured sub-view. 
+         * To use openSubModal : create a "modalOptions" property of your view which must have the following :
          *      - subView
          * Optiaonally you can add :
          *      - subViewOptions
          *      - openCallback
          *      - closeCallback
          */
-        modalize : function () {
+        openSubModal : function () {
             // Check that the modalOptions are set :
             var self = this;
             var required = ['subView'];
 
             if (this.modalOptions) {
-                for (var i=0; i<required.length; i++) {
-                    var prop = required[i];
+                _.each(required, function (prop) {
                     if (!this.modalOptions.hasOwnProperty(prop) || typeof this.modalOptions[prop] === 'undefined') {
-                        throw new Error("modalOptions." + prop + " is required to use modalize.");
+                        throw new Error("modalOptions." + prop + " is required to use openSubModal.");
                     }
-                }
+                });
 
             } else {
-                throw new Error("modalOptions is required to use modalize.");
+                throw new Error("modalOptions is required to use openSubModal.");
             }
 
             // If BBC.ModalView  is not loaded, then yell at the programmer :
             if (BBC.ModalView === 'undefined') {
-                throw new Error("BBC.ModalView is required to use modalize.");
+                throw new Error("BBC.ModalView is required to use openSubModal.");
             }
 
             // Create the instance of the ModalView using the construct property as the subview :
