@@ -85,7 +85,7 @@ var BBC = BBC || {};
         render : function () {
 
             // Loop through the fields. If the field has a view property, then render that, and add to the subs.
-            _.each(this.fields, function(field){
+            _.each(this.fields, function (field) {
 
                 var viewFunction; // func to create the new subview
                 var config; // configuration object for new subView
@@ -97,9 +97,9 @@ var BBC = BBC || {};
                 }
 
                 // If a valid attribute was not passed, AND this is not the submit button, then throw an error.
-                if ((!field.attribute || typeof field.attribute !== 'string') && field.type !== 'submit') {
-                    throw new Error('A valid attribute name must be provided for form view sub-views.');
-                }
+//                if ((!field.attribute || typeof field.attribute !== 'string') && field.type !== 'submit') {
+//                    throw new Error('A valid attribute name must be provided for form view sub-views.');
+//                }
 
                 // If the type is one of the pre-defined aliases, then use the coresponding pre-defined view :
                 if (_.contains(this.typeAliases, field.type)) {

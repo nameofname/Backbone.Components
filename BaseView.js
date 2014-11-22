@@ -315,7 +315,7 @@ var BBC = BBC || {};
 
             if (this.modalOptions) {
                 _.each(required, function (prop) {
-                    if (!this.modalOptions.hasOwnProperty(prop) || typeof this.modalOptions[prop] === 'undefined') {
+                    if (!self.modalOptions.hasOwnProperty(prop) || typeof self.modalOptions[prop] === 'undefined') {
                         throw new Error("modalOptions." + prop + " is required to use openSubModal.");
                     }
                 });
@@ -357,12 +357,14 @@ var BBC = BBC || {};
          * the attribute "data-varName" to your template.
          *      - defauls to "data"
          */
-            applyTemplate : function (selector) {
+        applyTemplate : function (selector) {
             var temp;
+            var templateId = this.options.templateId || this.templateId;
+
             if (this.options.template && typeof this.options.template === 'function') {
                 temp = this.options.template;
-            } else if (this.options.templateId && typeof this.options.templateId === 'string') {
-                temp = _.template($('#' + this.options.templateId).html(), null, {variable : 'data'})
+            } else if (templateId && typeof templateId === 'string') {
+                temp = _.template($('#' + templateId).html(), null, {variable : 'data'});
             } else if (selector && typeof selector === 'string') {
                 // Use variable name applied to template, or default to "data"
                 var varName = 'data';
