@@ -289,11 +289,6 @@ var BBC = BBC || {};
             'click input' : 'save'
         },
 
-//        initialize : function () {
-//            debugger;
-//            return BBC.FormView_BasicInput.prototype.initialize.apply(this, arguments);
-//        },
-
         save : function(e) {
             this.publish('FormView:save', this.model, e);
         }
