@@ -301,27 +301,28 @@ var BBC = BBC || {};
         /**
          * Adds a sub-view modal to the invoking view.
          * Modal sub-view will be populated with a configured sub-view. 
-         * To use openSubModal : create a "modalOptions" property of your view which must have the following :
+         * To use openSubModal : create a "subModalOptions" property of your view which must have the following :
          *      - subView
          * Optiaonally you can add :
          *      - subViewOptions
          *      - openCallback
+         *      - saveCallback
          *      - closeCallback
          */
         openSubModal : function () {
-            // Check that the modalOptions are set :
+            // Check that the subModalOptions are set :
             var self = this;
             var required = ['subView'];
 
-            if (this.modalOptions) {
+            if (self.subModalOptions) {
                 _.each(required, function (prop) {
-                    if (!self.modalOptions.hasOwnProperty(prop) || typeof self.modalOptions[prop] === 'undefined') {
-                        throw new Error("modalOptions." + prop + " is required to use openSubModal.");
+                    if (!self.subModalOptions.hasOwnProperty(prop) || typeof self.subModalOptions[prop] === 'undefined') {
+                        throw new Error("subModalOptions." + prop + " is required to use openSubModal.");
                     }
                 });
 
             } else {
-                throw new Error("modalOptions is required to use openSubModal.");
+                throw new Error("subModalOptions is required to use openSubModal.");
             }
 
             // If BBC.ModalView  is not loaded, then yell at the programmer :
@@ -330,22 +331,31 @@ var BBC = BBC || {};
             }
 
             // Create the instance of the ModalView using the construct property as the subview :
-            var modal = this.subViews.add('modal', BBC.ModalView, this.modalOptions);
+            var modal = self.subViews.add('modal', BBC.ModalView, self.subModalOptions);
 
             // Bind to the open and close callbacks :
-            if (self.modalOptions.openCallback) {
+            if (self.subModalOptions.openCallback) {
                 modal.on('ModalView:open', function () {
-                    self.modalOptions.openCallback.call(this);
+                    self.subModalOptions.openCallback.call(self);
                 });
             }
 
-            if (self.modalOptions.closeCallback) {
+            if (self.subModalOptions.closeCallback) {
                 modal.on('ModalView:close', function () {
-                    self.modalOptions.closeCallback.call(this);
+                    self.subModalOptions.closeCallback.call(self);
                 });
             }
 
             modal.render();
+        },
+
+        /**
+         * Closes the sub-modal using the closeModal method of the , and actually removes the view. This way, anything entered into the modal (if it
+         * contains a form for example) will be rendered again.
+         */
+        closeSubModal : function () {
+            var self = this;
+            self.subViews.get('modal').closeModal();
         },
 
         /**

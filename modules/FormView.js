@@ -59,7 +59,7 @@ var BBC = BBC || {};
          * with form view default options.
          * @param options
          */
-        initialize : function(options){
+        initialize : function (options) {
             this.fields = this.fields ? this.fields : options.fields;
 
             if (typeof this.fields === 'undefined') {
@@ -71,7 +71,7 @@ var BBC = BBC || {};
 
         events : {
             'click input.submit' : 'triggerSubmitCallback',
-            'submit form' : 'triggerSubmitCallback'
+            'submit' : 'triggerSubmitCallback'
         },
 
         /**
@@ -93,13 +93,7 @@ var BBC = BBC || {};
                 // If the type passed is not valid, then throw an error.
                 if (!field.type) {
                     throw new Error('A type attribute is required to init a form view sub-field.')
-
                 }
-
-                // If a valid attribute was not passed, AND this is not the submit button, then throw an error.
-//                if ((!field.attribute || typeof field.attribute !== 'string') && field.type !== 'submit') {
-//                    throw new Error('A valid attribute name must be provided for form view sub-views.');
-//                }
 
                 // If the type is one of the pre-defined aliases, then use the coresponding pre-defined view :
                 if (_.contains(this.typeAliases, field.type)) {
@@ -149,12 +143,20 @@ var BBC = BBC || {};
         },
 
         /**
-         * Executes the Callback for clicking the submit button passing the parameters [e, model]
+         * Executes the Callback for clicking the submit button passing the parameters [e, model].
+         * Note! You may create the submitCallback on the prototype, or pass in as an option.
          * @param e
          */
         triggerSubmitCallback : function(e) {
-            if (typeof this.options.submitCallback === 'function') {
-                this.options.submitCallback.apply(this, [e, this.model]);
+            var func = null;
+            if (_.isFunction(this.submitCallback)) {
+                func = this.submitCallback;
+            } else if (_.isFunction(this.options.submitCallback)) {
+                func = this.options.submitCallback;
+            }
+
+            if (func) {
+                func.apply(this, [e, this.model]);
             }
         },
 
@@ -286,6 +288,11 @@ var BBC = BBC || {};
         events : {
             'click input' : 'save'
         },
+
+//        initialize : function () {
+//            debugger;
+//            return BBC.FormView_BasicInput.prototype.initialize.apply(this, arguments);
+//        },
 
         save : function(e) {
             this.publish('FormView:save', this.model, e);
