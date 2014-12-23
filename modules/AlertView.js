@@ -58,7 +58,11 @@ var BBC = BBC || {};
 
             this.$el.html(this.template(this.config));
 
-            $(this.config.place).append(this.$el);
+            if (_.isString(this.config.place)) {
+                $(this.config.place).append(this.$el);
+            } else if ((_.isFunction(jQuery)) && this.config.place instanceof jQuery) {
+                this.config.place.append(this.$el);
+            }
 
             // If the config option to auto close was set as true, then hide this thing after an alotted period of time
             if (this.config.autoClose) {
