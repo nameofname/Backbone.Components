@@ -1,0 +1,21 @@
+<!-- Re-usable modal view template: -->
+<script type="text/template" xmlns="http://www.w3.org/1999/html" id="modal-template" enctype="multipart/form-data">
+    <div class='modal-above'>
+        <div class='modal-close-top'>
+            <button class="close modal-close">&times;</button>
+        </div>
+        <div class='modal-inner'>
+            <% if (data.title) { %>
+            <h3><%= data.title %></h3>
+            <% } %>
+        </div>
+    </div>
+</script>
+
+<!-- Alert View template: -->
+<script type="text/template" xmlns="http://www.w3.org/1999/html" id="alert-template" enctype="multipart/form-data">
+    <div class="alert alert-<%= options.type %>">
+        <%= options.autoClose ? "" : "<button type='button' class='close'>×</button>" %>
+        <strong><%= options.boldText %></strong> <%= options.message %>
+    </div>
+</script>
