@@ -224,6 +224,16 @@ var BBC = BBC || {};
             this.subViews.init(this);
             this.parentView = options.parentView || null;
 
+            if (!_.isUndefined(this.viewEvents)) {
+                _.each(this.viewEvents, function (val, key) {
+                    var callback = (typeof val === 'function') ? val : this[val];
+                    this.off(key);
+                    this.on(key, function () {
+                        callback.apply(this, arguments);
+                    });
+                }, this);
+            }
+
             BBC.BaseView.__super__.constructor.call(this, options);
             return this;
         },
