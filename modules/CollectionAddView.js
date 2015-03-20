@@ -24,6 +24,14 @@
             subView : BBC.BaseView
         },
 
+        viewEvents : {
+            'collectionAdd:remove' : 'removeSub'
+        },
+
+        events : {
+            'click .collection-add-new' : 'clickAddNewSub'
+        },
+
         initialize : function (options) {
 
             // If no collection was explicitly passed in the options, then attempt to retrieve it off of the model :
@@ -44,10 +52,10 @@
             this.options = options;
             this.applyTemplate('#collection-add-template');
 
-            // Bind to the collectionAdd:remove event triggered by the delete view (the trash icon)
-            this.on('collectionAdd:remove', function (view) {
-                this.removeSub(view);
-            });
+            ////Bind to the collectionAdd:remove event triggered by the delete view (the trash icon)
+            //this.on('collectionAdd:remove', function (view) {
+            //    this.removeSub(view);
+            //});
 
             return this;
         },
@@ -58,7 +66,7 @@
 
             if (this.collection.length) {
                 // Loop over the collection passed and create a new sub-view for each :
-                this.collection.each(function (model, key) {
+                this.collection.each(function (model) {
                     self.addNewSub(model);
                 });
             } else {
@@ -68,10 +76,6 @@
                 this.addNewSub(newModel);
             }
             return this;
-        },
-
-        events : {
-            'click .collection-add-new' : 'clickAddNewSub'
         },
 
         /**
@@ -104,6 +108,7 @@
          */
         addNewSub : function (model) {
             // TODO --- RE-FACTOR THIS FUNCTION TO CREATE A NEW FORM VIEW WITH 1 FIELD FOR EACH NEW SUB!!!
+            // TODO !!! OR NOT! I'm not sure how much I'm loving the form view.
             var newModel;
 
             // Do not add a new sub-view if the limit has been reached :
