@@ -52,11 +52,6 @@
             this.options = options;
             this.applyTemplate('#collection-add-template');
 
-            ////Bind to the collectionAdd:remove event triggered by the delete view (the trash icon)
-            //this.on('collectionAdd:remove', function (view) {
-            //    this.removeSub(view);
-            //});
-
             return this;
         },
 
