@@ -242,11 +242,16 @@ var BBC = BBC || {};
          * You will likely over-ride this basic render function in many cases
          */
         render: function () {
-            if (typeof this.template === 'function' && this.model instanceof Backbone.Model) {
-                this.$el.html(this.template(this.model.toJSON()));
-            } else if (typeof this.template === 'function' && this.model === undefined) {
-                this.$el.html(this.template());
+            var templateVars = (typeof this.getTemplateVars === 'function') ? this.getTemplateVars() : null;
+
+            if (!templateVars && this.model instanceof Backbone.Model) {
+                templateVars = this.model.toJSON();
             }
+
+            if (typeof this.template === 'function') {
+                this.$el.html(this.template(templateVars));
+            }
+
             this.trigger('BaseView:render');
             return this;
         },
