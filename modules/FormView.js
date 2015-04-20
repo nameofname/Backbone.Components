@@ -10,8 +10,9 @@ var BBC = BBC || {};
 /**
  * FORM VIEW:
  * Note: this generic form view is only able to manipulate a single model, collections are not supported.
- * Configuration for a form view should contain the following:
  *
+ * Configuration for a form view should contain the following:
+ * Options <object>
  * - model <Backbone.Model>
  * - type <string> (horizontal / inline)
  * - submitCallback <function> A function to be called on submit. Will be passed the params: [e, model]
@@ -32,6 +33,13 @@ var BBC = BBC || {};
  *      - options <array> option fields for selects
  *          - name <string> the displayed name of the option.
  *          - value <string> the value attribute of the option
+ *
+ * TEMPLATES : Use class "form-view-content" in your template to specify where fields should go.
+ * tl;dr;
+ * By default form view uses a simple template with very little markup. To over-ride the form view default template with
+ * your own custom template, just specify a template option on your form view constructor.
+ * You must include a container element with the class name "form-view-content" or else the form view will not know
+ * where to place your rendered form elements.
  */
 (function () {
     "use strict";
@@ -43,7 +51,7 @@ var BBC = BBC || {};
      */
     BBC.FormView = BBC.BaseView.extend({
 
-        className : 'form form-horizontal',
+        template: _.template('<div class="form form-horizontal form-view-content"></div>', null, {variable : 'obj'}),
 
         validation : {}, // if validation rules are passed with the fields array, then they will be added here.
 
@@ -83,6 +91,8 @@ var BBC = BBC || {};
          * @returns {FormView}
          */
         render : function () {
+
+            this.$el.append(this.template(this.model.toJSON()));
 
             // Loop through the fields. If the field has a view property, then render that, and add to the subs.
             _.each(this.fields, function (field) {
@@ -135,9 +145,13 @@ var BBC = BBC || {};
 
                 // Create the subView without passing a string key. Render and add it to the subViews :
                 var view = this.subViews.add(viewFunction, config);
-                this.$el.append(view.render().$el);
+                this.$('.form-view-content').append(view.render().$el);
 
             }, this);
+
+            // After rendering all fields, remove the form view content class. This fixes an issue where nested form
+            // views get multiple versions of themselves... inside themselves. 
+            this.$('.form-view-content').removeClass('form-view-content');
 
             return this;
         },
@@ -177,11 +191,14 @@ var BBC = BBC || {};
      *      Options :
      *      - template <function>
      *      - templateSelector <string>
+     *      - control <bool> -- pass true if you want to use from-control style templates.
      * @type {*}
      */
     BBC.FormView_BasicInput = BBC.BaseView.extend({
 
         type : null, // Views that extend FormView_BasicInput MUST declare a type. ie. 'text' or 'select'
+
+        _useCustomTemplate : false,
 
         events : {
             'change' : 'triggerChange'
@@ -203,7 +220,7 @@ var BBC = BBC || {};
                 formSuffix = 'form-';
             }
 
-            // Get the template by concatting the type with ... what I know is in the HTML templates.
+            // Get the template by concat-ing the type with ... what I know is in the HTML templates.
             // If the template (function) is passed, then use that, AND if a "templateSelector" is passed, then
             // use that :
             options.type = options.type ? options.type : this.type;
@@ -212,8 +229,10 @@ var BBC = BBC || {};
                 this.applyTemplate(templateSelector);
             } else if (this.options.template) {
                 this.template = this.options.template;
+                this._useCustomTemplate = true;
             } else if (this.options.templateSelector) {
                 this.applyTemplate(this.options.templateSelector);
+                this._useCustomTemplate = true;
             }
         },
 
@@ -221,7 +240,13 @@ var BBC = BBC || {};
             // Get the currentValue to display in the form field:
             this.options.currentValue = this.model.get(this.options.attribute);
 
-            this.$el.html(this.template(this.options));
+            if (this._useCustomTemplate) {
+                // This uses a work-around for current jquery bug not being able to recognize white space from
+                // templates -- you have to trim string and use parseHTML
+                this.$el = $.parseHTML(this.template(this.options).trim());
+            } else {
+                this.$el.html(this.template(this.options));
+            }
             return this;
         },
 
