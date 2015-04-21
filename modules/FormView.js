@@ -150,7 +150,7 @@ var BBC = BBC || {};
             }, this);
 
             // After rendering all fields, remove the form view content class. This fixes an issue where nested form
-            // views get multiple versions of themselves... inside themselves. 
+            // views get multiple versions of themselves... inside themselves.
             this.$('.form-view-content').removeClass('form-view-content');
 
             return this;
@@ -204,12 +204,20 @@ var BBC = BBC || {};
             'change' : 'triggerChange'
         },
 
+        _optionsToSet : ['className', 'tagName', 'template'],
+
         initialize : function(options) {
             var formSuffix = 'form-';
 
             this.options = _.defaults(this.options, {
                 autoSetFields : true
             });
+
+            _.each(this._optionsToSet, function (opt) {
+                if (options[opt]) {
+                  this[opt] = options[opt];
+                }
+            }, this);
 
             // If the optional control attribute is set to true, then use form control style templates :
             if (this.options.control === true) {
@@ -218,6 +226,10 @@ var BBC = BBC || {};
             } else {
                 this.$el.addClass('row');
                 formSuffix = 'form-';
+            }
+
+            if (this.options.getTemplateVars) {
+                this.getTemplateVars = this.options.getTemplateVars;
             }
 
             // Get the template by concat-ing the type with ... what I know is in the HTML templates.
@@ -237,22 +249,29 @@ var BBC = BBC || {};
         },
 
         render : function () {
+            var templateVars = (typeof this.getTemplateVars === 'function') ? this.getTemplateVars() : null;
+
+            if (!templateVars && this.model instanceof Backbone.Model) {
+                templateVars = this.options;
+            }
+
             // Get the currentValue to display in the form field:
-            this.options.currentValue = this.model.get(this.options.attribute);
+            templateVars.currentValue = this.model.get(this.options.attribute);
 
             if (this._useCustomTemplate) {
                 // This uses a work-around for current jquery bug not being able to recognize white space from
                 // templates -- you have to trim string and use parseHTML
-                this.$el = $.parseHTML(this.template(this.options).trim());
+                this.$el = $($.parseHTML(this.template(templateVars).trim()));
+                this.delegateEvents(this.events);
+
             } else {
-                this.$el.html(this.template(this.options));
+                this.$el.html(this.template(templateVars));
             }
             return this;
         },
 
         triggerChange : function(e) {
             this.updateModel(e);
-
             this.parentView.trigger('change', e);
         },
 

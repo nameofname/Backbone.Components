@@ -112,11 +112,15 @@ var BBC = BBC || {};
                 var selectedModel = self.searchCollection.get(data.selected);
                 self.publish('dynamic-change', e, data, selectedModel);
 
-                // If a model was passed as a part of the options, then set it with whatever model data we got from
-                // the sub-view.
-                if (self.model) {
-                    self.model.set(selectedModel.toJSON());
+                if (_.isFunction(self.options.changeCallback)) {
+                    self.options.changeCallback.apply(this, [e, data, selectedModel]);
                 }
+
+                //// If a model was passed as a part of the options, then set it with whatever model data we got from
+                //// the sub-view.
+                //if (self.model) {
+                //    self.model.set(selectedModel.toJSON());
+                //}
             });
 
             // Set keyup event on the chozen input field to do keyword search:
