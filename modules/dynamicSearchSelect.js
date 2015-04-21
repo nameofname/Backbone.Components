@@ -27,7 +27,8 @@ var BBC = BBC || {};
      *              it's a function it will be executed in the context of the view instance.
      *      - chosenOptions <object> any options you would normally pass to chosen method. Reference :
      *              http://harvesthq.github.io/chosen/
-     *
+     *      - changeCallback : callback to be applied on a change event
+     *              <function> arguments : [e, data, selectedModel]
      * @type {*}
      */
     BBC.dynamicSearchSelect = BBC.BaseView.extend({

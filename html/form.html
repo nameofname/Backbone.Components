@@ -32,7 +32,7 @@
             <option><%= config.placeholder %></option>
             <% } %>
             <% _.each(config.options, function (opt) { %>
-            <option value="<%= opt.value %>"><%= opt.name %></option>
+            <option value="<%= opt.value %>" <%= opt.value === config.currentValue ? 'selected' : '' %>><%= opt.name %></option>
             <% }); %>
         </select>
     </div>
