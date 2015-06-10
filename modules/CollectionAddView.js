@@ -134,7 +134,7 @@
             // Each row gets the child view the programmer specified, and a delete icon, wrapped in a generic base view
             var sub = this.subViews.add(_rowContainerView).render();
 
-            var child1 = sub.subViews.add(this.options.subView, subViewOptions).render();
+            var child1 = sub.subViews.add('child', this.options.subView, subViewOptions).render();
             sub.$('.col-add-input').append(child1.$el);
 
             // only apply the trash icon to sub-views other than the first one.
@@ -155,8 +155,9 @@
          * When you click the delete icon next to a given sub-view, remove it from the view + collection.
          */
         removeSub : function (view) {
-            // TODO ::: also remove the associated model from the collection.
+            var model = view.subViews.get('child').model;
             this.subViews.remove(view);
+            this.collection.remove(model);
         },
 
         /**
