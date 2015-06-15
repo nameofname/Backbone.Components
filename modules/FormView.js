@@ -267,6 +267,9 @@ var BBC = BBC || {};
             } else {
                 this.$el.html(this.template(templateVars));
             }
+
+            this.$el.attr('data-attribute', this.options.attribute);
+
             return this;
         },
 
