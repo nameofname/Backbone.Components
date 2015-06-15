@@ -29,7 +29,7 @@
     <div class="controls">
         <select>
             <% if (typeof config.placeholder === 'string') {%>
-            <option><%= config.placeholder %></option>
+            <option value=""><%= config.placeholder %></option>
             <% } %>
             <% _.each(config.options, function (opt) { %>
             <option value="<%= opt.value %>" <%= opt.value === config.currentValue ? 'selected' : '' %>><%= opt.name %></option>
